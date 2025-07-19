@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import CursosList from './components/CursosList';
-import CursoDetalle from './components/CursoDetail'; 
+import CursoDetail from './components/CursoDetail'; 
 import LeccionDetail from './components/LeccionDetail';
 
 function App() {
@@ -32,7 +32,12 @@ function App() {
       {/* Detalle de curso con parámetro :id */}
       <Route
         path="/cursos/:id"
-        element={accessToken ? <CursoDetalle /> : <Navigate to="/login" />}
+        element={accessToken ? <CursoDetail /> : <Navigate to="/login" />}
+      />
+      
+      <Route
+        path="/lecciones/:id"
+        element={accessToken ? <LeccionDetail /> : <Navigate to="/login" />}
       />
 
       {/* Ruta no encontrada */}
