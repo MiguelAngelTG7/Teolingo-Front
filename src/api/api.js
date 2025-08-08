@@ -20,6 +20,8 @@ export const getCursos = () => api.get('/cursos/');
 
 export const getCurso = (id) => api.get(`/cursos/${id}/`);
 
+export const getCursoDetail = getCurso;
+
 export const getLeccion = (id) => api.get(`/lecciones/${id}/`);
 
 export default api;

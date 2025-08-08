@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getCursos } from '../api/api';
 import { useAuth } from '../context/AuthContext';
+import '../App.css';
 
 export default function CursosList() {
-  const { accessToken, logout, user } = useAuth(); // asumimos que 'user' viene del contexto
+  const { accessToken, logout, user } = useAuth();
   const [cursos, setCursos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,40 +35,45 @@ export default function CursosList() {
     navigate('/login');
   };
 
-  if (loading) return <p className="text-gray-500">Cargando cursos...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) return <p className="text-secondary">Cargando cursos...</p>;
+  if (error) return <p className="text-danger">{error}</p>;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
+    <div className="container py-4" style={{ maxWidth: 700 }}>
+      <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="text-2xl font-bold">
-            Bienvenido{user?.username ? `, ${user.username}` : ''} 👋
+          <h2 className="duo-title mb-1">
+            Bienvenido{user?.username ? `, ${user.username}` : ''} 
           </h2>
-          <p className="text-gray-600">Explora nuestros cursos disponibles:</p>
+          <p className="text-secondary">Explora nuestros cursos disponibles:</p>
         </div>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+          className="btn btn-outline-danger rounded-pill fw-bold"
         >
           Cerrar sesión
         </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="row g-4">
         {cursos.map(curso => (
-          <div
-            key={curso.id}
-            className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition"
-          >
-            <h3 className="text-xl font-semibold mb-2">{curso.titulo}</h3>
-            <p className="text-gray-600 mb-4">{curso.descripcion}</p>
-            <Link
-              to={`/cursos/${curso.id}`}
-              className="text-blue-600 hover:underline"
+          <div key={curso.id} className="col-12 col-md-6">
+            <div
+              className="card shadow-sm border-0 rounded-4 h-100"
+              style={{ background: "#f8fbff" }}
             >
-              Ver lecciones →
-            </Link>
+              <div className="card-body d-flex flex-column">
+                <h3 className="fw-bold mb-2" style={{ color: "rgb(128,191,255)" }}>{curso.titulo}</h3>
+                <p className="text-secondary mb-4">{curso.descripcion}</p>
+                <Link
+                  to={`/cursos/${curso.id}`}
+                  className="btn btn-primary rounded-pill mt-auto"
+                  style={{ backgroundColor: "rgb(128,191,255)", borderColor: "rgb(128,191,255)", fontWeight: 700 }}
+                >
+                  Ver lecciones →
+                </Link>
+              </div>
+            </div>
           </div>
         ))}
       </div>

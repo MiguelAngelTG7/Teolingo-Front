@@ -1,42 +1,62 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+body {
+  font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+}
+
+.duo-title {
+  font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: rgb(128,191,255);
+  font-size: 2.2rem;
+}
+
+.duo-logo-bg {
+  background: rgb(128,191,255);
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 2px 12px rgba(128,191,255,0.15);
+}
+
+.duo-card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(128,191,255,0.18);
   padding: 2rem;
-  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.duo-btn {
+  background: rgb(128,191,255);
+  color: #fff;
+  font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  border-radius: 999px;
+  border: none;
+  padding: 0.8rem 2rem;
+  box-shadow: 0 2px 8px rgba(128,191,255,0.12);
+  transition: background 0.2s;
+  display: inline-block;
+  text-decoration: none;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.duo-btn:hover {
+  background: #5ba8e9;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.duo-alt-card {
+  transition: box-shadow 0.2s, transform 0.2s;
 }
-
-.card {
-  padding: 2em;
+.duo-alt-card:hover {
+  box-shadow: 0 8px 24px rgba(128,191,255,0.18);
+  transform: translateY(-2px) scale(1.03);
 }
-
-.read-the-docs {
-  color: #888;
+.duo-alt-card.selected {
+  background: rgb(128,191,255);
+  color: #fff;
+  border-color: rgb(128,191,255);
 }

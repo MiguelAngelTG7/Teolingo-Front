@@ -5,6 +5,7 @@ import Login from './components/Login';
 import CursosList from './components/CursosList';
 import CursoDetail from './components/CursoDetail'; 
 import LeccionDetail from './components/LeccionDetail';
+import CursoProgreso from './components/CursoProgreso';
 
 function App() {
   const { accessToken } = useAuth();
@@ -38,6 +39,11 @@ function App() {
       <Route
         path="/lecciones/:id"
         element={accessToken ? <LeccionDetail /> : <Navigate to="/login" />}
+      />
+
+      <Route
+        path="/cursos/:id/progreso"
+        element={accessToken ? <CursoProgreso /> : <Navigate to="/login" />}
       />
 
       {/* Ruta no encontrada */}
