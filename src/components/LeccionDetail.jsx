@@ -84,17 +84,24 @@ export default function LeccionDetail() {
   };
 
   return (
-    <div className="min-vh-100" style={{ background: "rgb(128,191,255)" }}>
-      <div className="container py-5" style={{ maxWidth: 500 }}>
-        <h2 className="duo-title mb-4 text-center">{leccion.titulo}</h2>
-        <div className="mb-4">
+    <div className="min-vh-100" style={{ background: "#111" }}>
+      <div className="container py-5" style={{ maxWidth: 540 }}>
+        {/* Lección X debajo del título */}
+        <div className="mb-1 text-center">
+          <span style={{ color: '#b0e3faff', fontWeight: 700, fontSize: '2rem', letterSpacing: 1}}>
+            Lección {leccion.numero || 1 }:  Quiz
+          </span>
+        </div>
+        <br></br>
+        {/* Barra de progreso */}
+        <div className="mb-2">
           <div
             className="progress"
             style={{
-              height: 16,
-              background: "#e3f1ff",
+              height: 10,
+              background: "#d4e8fcff",
               borderRadius: 12,
-              border: "2px solid #b3d6fa",
+              border: "2px solid #90a0b0ff",
               boxShadow: "0 2px 8px rgba(128,191,255,0.15)"
             }}
           >
@@ -103,7 +110,7 @@ export default function LeccionDetail() {
               role="progressbar"
               style={{
                 width: `${((actual + 1) / total) * 100}%`,
-                background: "rgb(128,191,255)",
+                background: "rgba(172, 187, 201, 1)",
                 borderRadius: 10,
                 boxShadow: "0 2px 8px rgba(128,191,255,0.18)",
                 transition: "width 0.3s"
@@ -114,12 +121,18 @@ export default function LeccionDetail() {
             />
           </div>
         </div>
+        {/* Pregunta Y de Z debajo de la barra de progreso */}
+        <div className="mb-4 text-center">
+          <span style={{ color: '#e0e0e0', fontWeight: 600, fontSize: '1.1rem', letterSpacing: 0.5 }}>
+            Pregunta {actual + 1} de {total}
+          </span>
+        </div>
 
         {terminado ? (
           <div className="row justify-content-center">
             <div className="col-12 col-md-6 mb-4">
-              <div className="duo-card text-center">
-                <h4 className="fw-bold mb-2" style={{ color: "#222e50" }}>Total XP</h4>
+              <div className="duo-card text-center bg-dark text-white border-0" style={{ borderRadius: 18 }}>
+                <h4 className="fw-bold mb-2">Total XP</h4>
                 <p
                   style={{
                     fontSize: "2.5rem",
@@ -140,8 +153,8 @@ export default function LeccionDetail() {
               </div>
             </div>
             <div className="col-12 col-md-6 mb-4">
-              <div className="duo-card text-center">
-                <h4 className="fw-bold mb-2" style={{ color: "#222e50" }}>
+              <div className="duo-card text-center bg-dark text-white border-0" style={{ borderRadius: 18 }}>
+                <h4 className="fw-bold mb-2">
                   {porcentaje === 100
                     ? "Perfecto"
                     : porcentaje >= 76
@@ -185,9 +198,9 @@ export default function LeccionDetail() {
             </div>
           </div>
         ) : (
-          <div className="duo-card">
-            <p className="text-secondary mb-4">{leccion.introduccion}</p>
-            <h3 className="fw-bold mb-4 text-center" style={{ color: "rgb(128,191,255)" }}>
+          <div className="duo-card bg-dark text-white border-0" style={{ borderRadius: 18, background: '#111', color: '#fff' }}>
+            <p className="mb-4" style={{ color: "#fff", fontWeight: 600, fontSize: '1.15rem' }}>{leccion.introduccion}</p>
+            <h3 className="fw-bold mb-4 text-center" style={{ color: "#fff", fontWeight: 900, fontSize: '1.4rem' }}>
               {ejercicioActual.pregunta || ejercicioActual.versiculo}
             </h3>
             <div className="d-flex flex-column gap-4 align-items-center mb-4">
@@ -198,11 +211,11 @@ export default function LeccionDetail() {
                   onClick={() => !mostrarFeedback && handleSeleccion(op)}
                   style={{
                     cursor: mostrarFeedback ? 'default' : 'pointer',
-                    background: opcionSeleccionada === op ? "rgb(128,191,255)" : "#fff",
-                    color: opcionSeleccionada === op ? "#fff" : "#222",
-                    border: "2px solid rgb(128,191,255)",
+                    background: opcionSeleccionada === op ? "#fff" : "#222",
+                    color: opcionSeleccionada === op ? "#222" : "#fff",
+                    border: "2px solid #fff",
                     borderRadius: 18,
-                    boxShadow: "0 2px 12px rgba(128,191,255,0.10)",
+                    boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
                     padding: "1.2rem 1rem",
                     minHeight: 60,
                     fontWeight: 700,
@@ -219,7 +232,16 @@ export default function LeccionDetail() {
             {!mostrarFeedback && opcionSeleccionada && (
               <button
                 onClick={handleRevisar}
-                className="duo-btn mt-2"
+                className="btn btn-lg fw-bold mt-2"
+                style={{
+                  background: "#1cb0f6",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                  minWidth: 160
+                }}
               >
                 Revisar
               </button>
@@ -234,6 +256,7 @@ export default function LeccionDetail() {
                       ? 'text-success'
                       : 'text-danger'
                   }`}
+                  style={{ fontSize: '1.1rem' }}
                 >
                   {respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta
                     ? '✅ ¡Correcto!'
@@ -241,7 +264,16 @@ export default function LeccionDetail() {
                 </p>
                 <button
                   onClick={siguiente}
-                  className="duo-btn mt-4"
+                  className="btn btn-lg fw-bold mt-4"
+                  style={{
+                    background: "#1cb0f6",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 10,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                    minWidth: 160
+                  }}
                 >
                   {actual + 1 === total ? 'Finalizar' : 'Siguiente'}
                 </button>
