@@ -1,0 +1,31 @@
+/* Fuente similar a Duolingo: Nunito Sans (Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700;900&display=swap');
+
+body, .duolingo-font {
+  font-family: 'Nunito Sans', Arial, Helvetica, sans-serif !important;
+}
+
+/* Botones estilo Duolingo pero con tus colores */
+.btn-duo, .btn.btn-duo {
+  font-family: 'Nunito Sans', Arial, Helvetica, sans-serif !important;
+  font-weight: 800;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 12px #0002;
+  transition: box-shadow 0.2s, transform 0.2s;
+  padding: 0.7em 2em;
+  font-size: 1.1rem;
+}
+
+.btn-duo:active, .btn.btn-duo:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px #0003;
+}
+
+.btn-duo:focus, .btn.btn-duo:focus {
+  outline: 2px solid #1cb0f6;
+  outline-offset: 2px;
+}
+
+/* Puedes agregar más estilos si lo deseas */

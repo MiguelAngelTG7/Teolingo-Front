@@ -65,8 +65,8 @@ export default function CursosList() {
           </div>
           <button
             onClick={handleLogout}
-            className="btn fw-bold rounded-pill"
-            style={{ background: 'transparent', color: '#ff5252', border: '2px solid #ff5252', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 15 }}
+            className="btn btn-duo"
+            style={{ background: 'transparent', color: '#ff5252', border: '2px solid #ff5252', fontWeight: 700, fontSize: 15 }}
           >
             Cerrar sesión
           </button>
@@ -112,13 +112,13 @@ export default function CursosList() {
                     </span>
                     {progresos[curso.id] && (
                       <span style={{ color: '#1cb0f6', fontWeight: 700 }}>
-                        {progresos[curso.id].porcentaje ? `${progresos[curso.id].porcentaje.toFixed(1)}% Completado` : '0% Completado'}
+                        {progresos[curso.id].porcentaje ? `${Math.round(progresos[curso.id].porcentaje)}% Completado` : '0% Completado'}
                       </span>
                     )}
                   </div>
                 </div>
                 {/* Título y categoría debajo */}
-                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{ background: 'transparent', minHeight: 100 }}>
+                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 100 }}>
                   <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
                   <div className="mb-2" style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
                     {curso.categoria?.nombre && (

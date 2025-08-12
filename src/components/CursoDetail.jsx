@@ -41,24 +41,40 @@ export default function CursoDetail() {
     return (
       <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center" style={{ background: '#111', minHeight: '100vh', padding: '32px 0' }}>
         <div className="container" style={{ maxWidth: 700, background: '#111', borderRadius: 18, padding: '32px 24px', boxShadow: '0 2px 16px #0006' }}>
-          <button
-            className="btn fw-bold mb-4"
-            style={{
-              background: 'transparent',
-              color: '#ff5252',
-              border: '2px solid #ff5252',
-              borderRadius: 10,
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: 0.5,
-              fontSize: 15,
-              marginBottom: 24
-            }}
-            onClick={() => setLeccionSeleccionada(null)}
-          >
-            Volver al listado de lecciones
-          </button>
-          <h2 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 28, letterSpacing: 0.5, textTransform: 'uppercase' }}>{leccionSeleccionada.titulo}</h2>
+      <button
+        className="btn fw-bold"
+        style={{
+          position: 'absolute',
+          top: 24,
+          left: 24,
+          zIndex: 100,
+          background: '#232323',
+          color: '#fff',
+          border: '2px solid #1cb0f6',
+          borderRadius: 10,
+          fontSize: 16,
+          letterSpacing: 0.5,
+          textTransform: 'uppercase',
+          minWidth: 120,
+          padding: '8px 18px',
+          fontWeight: 800,
+          boxShadow: '0 2px 12px #0005',
+        }}
+        onClick={() => setLeccionSeleccionada(null)}
+      >
+        ← LECCIONES
+      </button>
+          {/* Indicador de número de lección */}
+          {curso.lecciones && (
+            <div className="text-center" style={{ color: '#1cb0f6', fontWeight: 700, fontSize: 18, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              {(() => {
+                const sortedLecciones = [...curso.lecciones].sort((a, b) => a.id - b.id);
+                const idx = sortedLecciones.findIndex(l => l.id === leccionSeleccionada.id);
+                return idx !== -1 ? `Lección ${idx + 1}` : '';
+              })()}
+            </div>
+          )}
+          <h2 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 33, letterSpacing: 0.5, textTransform: 'uppercase' }}>{leccionSeleccionada.titulo}</h2>
           {/* Video de presentación */}
           <div className="mb-4 text-center">
             <iframe
@@ -79,7 +95,6 @@ export default function CursoDetail() {
             />
           </div>
           {/* Botón para descargar PDF */}
-          {/* Botón para descargar PDF (forzar descarga) */}
           <div className="mb-4 text-center">
             <button
               className="btn fw-bold"
@@ -103,7 +118,7 @@ export default function CursoDetail() {
                 document.body.removeChild(link);
               }}
             >
-              Descargar Guía de Estudio (PDF)
+              Guía de Estudio (PDF)
             </button>
           </div>
           {/* Botón para abrir el quiz */}
@@ -132,7 +147,31 @@ export default function CursoDetail() {
 
   // Listado de lecciones
   return (
-    <div className="min-vh-100" style={{ background: '#111' }}>
+    <div className="min-vh-100" style={{ background: '#111', position: 'relative' }}>
+      {/* Botón para regresar al dashboard */}
+      <button
+        className="btn fw-bold"
+        style={{
+          position: 'absolute',
+          top: 24,
+          left: 24,
+          zIndex: 100,
+          background: '#232323',
+          color: '#fff',
+          border: '2px solid #1cb0f6',
+          borderRadius: 10,
+          fontSize: 16,
+          letterSpacing: 0.5,
+          textTransform: 'uppercase',
+          minWidth: 120,
+          padding: '8px 18px',
+          fontWeight: 800,
+          boxShadow: '0 2px 12px #0005',
+        }}
+        onClick={() => window.location.href = '/dashboard'}
+      >
+        ← Dashboard
+      </button>
       {/* Cabecera con imagen de fondo y overlay */}
       <div style={{
         position: 'relative',
@@ -198,67 +237,71 @@ export default function CursoDetail() {
       <div className="container" style={{ maxWidth: 700, marginTop: 32 }}>
         {/* Descripción destacada (primer párrafo en negrita) */}
         {curso.descripcion && (
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: 22, marginBottom: 18, lineHeight: 1.3 }}>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: 18, marginBottom: 20, lineHeight: 1.4 }}>
             {curso.descripcion.split('\n')[0]}
           </div>
         )}
-        {/* Texto largo (resto de la descripción) */}
+        {/* Texto largo (resto de la descripción, con saltos de línea como párrafos) */}
         {curso.descripcion && curso.descripcion.split('\n').slice(1).join('\n') && (
           <div style={{ color: '#e0e0e0', fontSize: 17, marginBottom: 32, lineHeight: 1.7 }}>
-            {curso.descripcion.split('\n').slice(1).join('\n')}
+            {curso.descripcion.split('\n').slice(1).map((p, i) =>
+              p.trim() ? <p key={i} style={{ marginBottom: 16 }}>{p}</p> : null
+            )}
           </div>
         )}
         {/* Listado de lecciones */}
         <div className="row justify-content-center">
-          {curso.lecciones?.map((leccion, idx) => (
-            <div key={leccion.id} className="col-12 mb-3">
-              <div
-                className="lesson-card text-white"
-                style={{
-                  background: '#181818',
-                  border: '2px solid #fff',
-                  borderRadius: 12,
-                  padding: '22px 24px',
-                  marginBottom: 8,
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  fontSize: 20,
-                  boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
-                  transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
-                  textAlign: 'left',
-                  position: 'relative',
-                  letterSpacing: 0.2,
-                  outline: 'none',
-                  userSelect: 'none',
-                }}
-                tabIndex={0}
-                onClick={() => setLeccionSeleccionada(leccion)}
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setLeccionSeleccionada(leccion); }}
-                onMouseOver={e => {
-                  e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
-                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                  e.currentTarget.style.borderColor = '#1cb0f6';
-                }}
-                onMouseOut={e => {
-                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
-                  e.currentTarget.style.transform = 'none';
-                  e.currentTarget.style.borderColor = '#fff';
-                }}
-              >
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                  Lección {idx + 1}
-                </div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
-                  {leccion.titulo}
-                </div>
-                {leccion.descripcion && (
-                  <div style={{ color: '#e0e0e0', fontWeight: 400, fontSize: 16, marginTop: 2, opacity: 0.85 }}>
-                    {leccion.descripcion}
+          {curso.lecciones && [...curso.lecciones]
+            .sort((a, b) => a.id - b.id)
+            .map((leccion, idx) => (
+              <div key={leccion.id} className="col-12 mb-3">
+                <div
+                  className="lesson-card text-white"
+                  style={{
+                    background: '#181818',
+                    border: '2px solid #fff',
+                    borderRadius: 12,
+                    padding: '22px 24px',
+                    marginBottom: 8,
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    fontSize: 20,
+                    boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
+                    transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
+                    textAlign: 'left',
+                    position: 'relative',
+                    letterSpacing: 0.2,
+                    outline: 'none',
+                    userSelect: 'none',
+                  }}
+                  tabIndex={0}
+                  onClick={() => setLeccionSeleccionada(leccion)}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setLeccionSeleccionada(leccion); }}
+                  onMouseOver={e => {
+                    e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
+                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                    e.currentTarget.style.borderColor = '#1cb0f6';
+                  }}
+                  onMouseOut={e => {
+                    e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.borderColor = '#fff';
+                  }}
+                >
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                    Lección {idx + 1}
                   </div>
-                )}
+                  <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
+                    {leccion.titulo}
+                  </div>
+                  {leccion.descripcion && (
+                    <div style={{ color: '#e0e0e0', fontWeight: 400, fontSize: 16, marginTop: 2, opacity: 0.85 }}>
+                      {leccion.descripcion}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

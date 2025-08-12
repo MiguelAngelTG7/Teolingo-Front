@@ -51,12 +51,13 @@ export default function LeccionDetail() {
     setTerminado(false);
   };
 
+
   const correctas = leccion.ejercicios.filter(
     ej => respuestas[ej.id] === ej.respuesta_correcta
   ).length;
-
   const total = leccion.ejercicios.length;
   const porcentaje = Math.round((correctas / total) * 100);
+  const xpTotal = correctas * 3;
 
   // Guardar progreso en el servidor
   const guardarProgreso = (resultado) => {
@@ -89,7 +90,7 @@ export default function LeccionDetail() {
         {/* Lección X debajo del título */}
         <div className="mb-1 text-center">
           <span style={{ color: '#1cb0f6', fontWeight: 700, fontSize: '2.3rem', letterSpacing: 1 }}>
-            Lección {leccion.numero || 1}: Quiz
+            Lección {leccion.id|| 1}: Quiz
           </span>
         </div>
         <br />
@@ -131,7 +132,7 @@ export default function LeccionDetail() {
         {terminado ? (
           <div className="row justify-content-center">
             <div className="col-12 col-md-6 mb-4">
-              <div className="duo-card text-center bg-dark text-white border-0" style={{ borderRadius: 18 }}>
+              <div className="duo-card text-center bg-dark text-white border-0" style={{ borderRadius: 18, boxShadow: 'none' }}>
                 <h4 className="fw-bold mb-2">Total XP</h4>
                 <p
                   style={{
@@ -148,12 +149,12 @@ export default function LeccionDetail() {
                         : "#fa5252"
                   }}
                 >
-                  {porcentaje}
+                  {xpTotal}
                 </p>
               </div>
             </div>
             <div className="col-12 col-md-6 mb-4">
-              <div className="duo-card text-center bg-dark text-white border-0" style={{ borderRadius: 18 }}>
+              <div className="duo-card text-center bg-dark text-white border-0" style={{ borderRadius: 18, boxShadow: 'none' }}>
                 <h4 className="fw-bold mb-2">
                   {porcentaje === 100
                     ? "Perfecto"
@@ -172,7 +173,7 @@ export default function LeccionDetail() {
                       porcentaje === 100
                         ? "#58cc02"
                         : porcentaje >= 76
-                        ? "#ffd700"
+                        ? "#d1caa3ff"
                         : porcentaje >= 51
                         ? "#1cb0f6"
                         : "#fa5252"
@@ -185,20 +186,40 @@ export default function LeccionDetail() {
             <div className="col-12 text-center">
               <button
                 onClick={() => {
-                  if (leccion.curso_id) {
+                  // Ir a la siguiente lección si existe
+                  if (leccion.siguiente_leccion_id) {
+                    navigate(`/lecciones/${leccion.siguiente_leccion_id}`);
+                  } else if (leccion.curso_id) {
                     navigate(`/cursos/${leccion.curso_id}/progreso`);
                   } else {
-                    alert("No se encontró el curso de esta lección.");
+                    alert("No se encontró la siguiente lección ni el curso de esta lección.");
                   }
                 }}
-                className="duo-btn mt-2"
+                style={{
+                  background: 'transparent',
+                  color: '#fff',
+                  border: '2px solid #1cb0f6',
+                  borderRadius: 14,
+                  fontWeight: 700,
+                  fontSize: '1.25rem',
+                  letterSpacing: 0.5,
+                  textTransform: 'uppercase',
+                  minWidth: 180,
+                  padding: '8px 28px',
+                  boxShadow: 'none',
+                  outline: 'none',
+                  transition: 'border-color 0.2s, color 0.2s',
+                  marginTop: 8,
+                  cursor: 'pointer',
+                  display: 'inline-block',
+                }}
               >
-                Continuar
+                Terminar
               </button>
             </div>
           </div>
         ) : (
-          <div className="duo-card bg-dark text-white border-0" style={{ borderRadius: 18, background: '#181818', color: '#fff', boxShadow: '0 2px 16px #0006', border: '2px solid #fff' }}>
+          <div className="duo-card bg-dark text-white border-0" style={{ borderRadius: 18, background: '#181818', color: '#fff', boxShadow: 'none', border: '2px solid #fff' }}>
             <p className="mb-4" style={{ color: '#e0e0e0', fontWeight: 600, fontSize: '1.15rem' }}>{leccion.introduccion}</p>
             <h3 className="fw-bold mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: '1.4rem' }}>
               {ejercicioActual.pregunta || ejercicioActual.versiculo}
@@ -215,7 +236,7 @@ export default function LeccionDetail() {
                     color: opcionSeleccionada === op ? '#222' : '#fff',
                     border: '2px solid #fff',
                     borderRadius: 18,
-                    boxShadow: '0 2px 12px #0008',
+                    boxShadow: 'none',
                     padding: '1.2rem 1rem',
                     minHeight: 60,
                     fontWeight: 700,
@@ -255,11 +276,11 @@ export default function LeccionDetail() {
               <>
                 <p
                   className={`mt-3 fw-bold text-center`}
-                  style={{ fontSize: '1.1rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#58cc02' : '#ff5252' }}
+                  style={{ fontSize: '2rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#d1d070ff' : '#ff7e7eff' }}
                 >
                   {respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta
-                    ? '✅ ¡Correcto!'
-                    : `❌ Incorrecto. Respuesta correcta: ${ejercicioActual.respuesta_correcta}`}
+                    ? ' ¡Correcto!'
+                    : ` Incorrecto. Respuesta correcta: ${ejercicioActual.respuesta_correcta}`}
                 </p>
                 <button
                   onClick={siguiente}
