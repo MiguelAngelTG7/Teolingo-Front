@@ -23,16 +23,16 @@ export default function Login() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ background: "rgb(128,191,255)" }}>
-      <div className="card shadow-lg p-4 rounded-4" style={{ maxWidth: 400, width: "100%" }}>
+    <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ background: '#111' }}>
+      <div className="shadow-lg p-4 rounded-4" style={{ maxWidth: 400, width: '100%', background: '#181818', border: '2px solid #fff', color: '#fff', boxShadow: '0 2px 16px #0006' }}>
         <div className="text-center mb-3">
-          <div className="duo-logo-bg">
-            <img src={logo} alt="Teolingo Logo" style={{ width: 120, height: 120 }} />
+          <div style={{ background: '#232323', borderRadius: '50%', width: 120, height: 120, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #0005' }}>
+            <img src={logo} alt="Teolingo Logo" style={{ width: 90, height: 90 }} />
           </div>
-          <h1 className="duo-title mt-2 mb-1">Teolingo</h1>
+          <h1 className="mt-3 mb-1" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>Teolingo</h1>
         </div>
-        <h2 className="fw-bold mb-4 text-center" style={{ color: "rgb(128,191,255)" }}>Iniciar Sesión</h2>
-        {error && <div className="alert alert-danger py-2">{error}</div>}
+        <h2 className="fw-bold mb-4 text-center" style={{ color: '#1cb0f6', fontWeight: 800, fontSize: 22, letterSpacing: 0.5 }}>Iniciar Sesión</h2>
+        {error && <div className="alert alert-danger py-2" style={{ background: '#ff5252', color: '#fff', border: 'none', fontWeight: 700 }}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <input
@@ -42,7 +42,7 @@ export default function Login() {
               onChange={(e) => setUsername(e.target.value)}
               className="form-control form-control-lg rounded-pill"
               required
-              style={{ borderColor: "rgb(128,191,255)" }}
+              style={{ borderColor: '#1cb0f6', background: '#232323', color: '#fff', fontWeight: 600, fontSize: 17, boxShadow: 'none' }}
             />
           </div>
           <div className="mb-4">
@@ -53,13 +53,13 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="form-control form-control-lg rounded-pill"
               required
-              style={{ borderColor: "rgb(128,191,255)" }}
+              style={{ borderColor: '#1cb0f6', background: '#232323', color: '#fff', fontWeight: 600, fontSize: 17, boxShadow: 'none' }}
             />
           </div>
           <button
             type="submit"
-            className="btn btn-lg w-100 rounded-pill"
-            style={{ backgroundColor: "rgb(128,191,255)", borderColor: "rgb(128,191,255)", color: "#fff", fontWeight: 700 }}
+            className="btn btn-lg w-100 rounded-pill fw-bold"
+            style={{ background: '#1cb0f6', borderColor: '#1cb0f6', color: '#fff', fontWeight: 800, fontSize: 18, letterSpacing: 0.5, textTransform: 'uppercase', boxShadow: '0 2px 12px #0005' }}
           >
             Entrar
           </button>

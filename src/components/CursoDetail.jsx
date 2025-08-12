@@ -79,30 +79,33 @@ export default function CursoDetail() {
             />
           </div>
           {/* Botón para descargar PDF */}
-          {leccionSeleccionada.guia_pdf_url && (
-            <div className="mb-4 text-center">
-              <a
-                href={leccionSeleccionada.guia_pdf_url}
-                className="btn fw-bold"
-                style={{
-                  background: '#111',
-                  color: '#fff',
-                  border: '2px solid #fff',
-                  borderRadius: 10,
-                  fontSize: 17,
-                  letterSpacing: 0.5,
-                  textTransform: 'uppercase',
-                  minWidth: 220,
-                  marginBottom: 12
-                }}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-              >
-                Descargar Guía de Estudio (PDF)
-              </a>
-            </div>
-          )}
+          {/* Botón para descargar PDF (forzar descarga) */}
+          <div className="mb-4 text-center">
+            <button
+              className="btn fw-bold"
+              style={{
+                background: '#111',
+                color: '#fff',
+                border: '2px solid #fff',
+                borderRadius: 10,
+                fontSize: 17,
+                letterSpacing: 0.5,
+                textTransform: 'uppercase',
+                minWidth: 220,
+                marginBottom: 12
+              }}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = `/assets/leccion_${leccionSeleccionada.id}.pdf`;
+                link.download = `leccion_${leccionSeleccionada.id}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+            >
+              Descargar Guía de Estudio (PDF)
+            </button>
+          </div>
           {/* Botón para abrir el quiz */}
           <div className="text-center">
             <button
@@ -141,22 +144,22 @@ export default function CursoDetail() {
         justifyContent: 'center',
         overflow: 'hidden',
       }}>
-        {curso.imagen_url && (
-          <img
-            src={curso.imagen_url}
-            alt={curso.titulo}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              zIndex: 1,
-              filter: 'brightness(0.55)'
-            }}
-          />
-        )}
+        {/* Imagen de cabecera del curso (por convención: curso_{curso.id}.png) */}
+        <img
+          src={`/assets/curso_${curso.id}.png`}
+          alt={curso.titulo}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: 1,
+            filter: 'brightness(0.55)'
+          }}
+          onError={e => { e.target.style.display = 'none'; }}
+        />
         <div style={{
           position: 'relative',
           zIndex: 2,
@@ -165,7 +168,6 @@ export default function CursoDetail() {
           padding: '32px 24px 32px 24px',
           textAlign: 'center',
         }}>
-          {/* Categoría como badge */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
             <span style={{
               background: '#232323',

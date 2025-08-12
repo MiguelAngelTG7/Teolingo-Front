@@ -84,25 +84,25 @@ export default function LeccionDetail() {
   };
 
   return (
-    <div className="min-vh-100" style={{ background: "#111" }}>
+    <div className="min-vh-100" style={{ background: '#111' }}>
       <div className="container py-5" style={{ maxWidth: 540 }}>
         {/* Lección X debajo del título */}
         <div className="mb-1 text-center">
-          <span style={{ color: '#b0e3faff', fontWeight: 700, fontSize: '2rem', letterSpacing: 1}}>
-            Lección {leccion.numero || 1 }:  Quiz
+          <span style={{ color: '#1cb0f6', fontWeight: 700, fontSize: '2.3rem', letterSpacing: 1 }}>
+            Lección {leccion.numero || 1}: Quiz
           </span>
         </div>
-        <br></br>
+        <br />
         {/* Barra de progreso */}
         <div className="mb-2">
           <div
             className="progress"
             style={{
               height: 10,
-              background: "#d4e8fcff",
+              background: '#232323',
               borderRadius: 12,
-              border: "2px solid #90a0b0ff",
-              boxShadow: "0 2px 8px rgba(128,191,255,0.15)"
+              border: '2px solid #fff',
+              boxShadow: '0 2px 8px #0005'
             }}
           >
             <div
@@ -110,10 +110,10 @@ export default function LeccionDetail() {
               role="progressbar"
               style={{
                 width: `${((actual + 1) / total) * 100}%`,
-                background: "rgba(172, 187, 201, 1)",
+                background: 'linear-gradient(90deg, #1cb0f6 60%, #81bfff 100%)',
                 borderRadius: 10,
-                boxShadow: "0 2px 8px rgba(128,191,255,0.18)",
-                transition: "width 0.3s"
+                boxShadow: '0 2px 8px #1cb0f633',
+                transition: 'width 0.3s'
               }}
               aria-valuenow={actual + 1}
               aria-valuemin={1}
@@ -198,9 +198,9 @@ export default function LeccionDetail() {
             </div>
           </div>
         ) : (
-          <div className="duo-card bg-dark text-white border-0" style={{ borderRadius: 18, background: '#111', color: '#fff' }}>
-            <p className="mb-4" style={{ color: "#fff", fontWeight: 600, fontSize: '1.15rem' }}>{leccion.introduccion}</p>
-            <h3 className="fw-bold mb-4 text-center" style={{ color: "#fff", fontWeight: 900, fontSize: '1.4rem' }}>
+          <div className="duo-card bg-dark text-white border-0" style={{ borderRadius: 18, background: '#181818', color: '#fff', boxShadow: '0 2px 16px #0006', border: '2px solid #fff' }}>
+            <p className="mb-4" style={{ color: '#e0e0e0', fontWeight: 600, fontSize: '1.15rem' }}>{leccion.introduccion}</p>
+            <h3 className="fw-bold mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: '1.4rem' }}>
               {ejercicioActual.pregunta || ejercicioActual.versiculo}
             </h3>
             <div className="d-flex flex-column gap-4 align-items-center mb-4">
@@ -211,16 +211,16 @@ export default function LeccionDetail() {
                   onClick={() => !mostrarFeedback && handleSeleccion(op)}
                   style={{
                     cursor: mostrarFeedback ? 'default' : 'pointer',
-                    background: opcionSeleccionada === op ? "#fff" : "#222",
-                    color: opcionSeleccionada === op ? "#222" : "#fff",
-                    border: "2px solid #fff",
+                    background: opcionSeleccionada === op ? '#fff' : '#222',
+                    color: opcionSeleccionada === op ? '#222' : '#fff',
+                    border: '2px solid #fff',
                     borderRadius: 18,
-                    boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
-                    padding: "1.2rem 1rem",
+                    boxShadow: '0 2px 12px #0008',
+                    padding: '1.2rem 1rem',
                     minHeight: 60,
                     fontWeight: 700,
-                    fontSize: "1.1rem",
-                    transition: "all 0.2s"
+                    fontSize: '1.1rem',
+                    transition: 'all 0.2s'
                   }}
                 >
                   {op}
@@ -234,13 +234,16 @@ export default function LeccionDetail() {
                 onClick={handleRevisar}
                 className="btn btn-lg fw-bold mt-2"
                 style={{
-                  background: "#1cb0f6",
-                  color: "#fff",
-                  border: "none",
+                  background: '#1cb0f6',
+                  color: '#fff',
+                  border: 'none',
                   borderRadius: 10,
-                  textTransform: "uppercase",
+                  textTransform: 'uppercase',
                   letterSpacing: 0.5,
-                  minWidth: 160
+                  minWidth: 160,
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  boxShadow: '0 2px 12px #0005'
                 }}
               >
                 Revisar
@@ -251,12 +254,8 @@ export default function LeccionDetail() {
             {mostrarFeedback && (
               <>
                 <p
-                  className={`mt-3 fw-bold text-center ${
-                    respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta
-                      ? 'text-success'
-                      : 'text-danger'
-                  }`}
-                  style={{ fontSize: '1.1rem' }}
+                  className={`mt-3 fw-bold text-center`}
+                  style={{ fontSize: '1.1rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#58cc02' : '#ff5252' }}
                 >
                   {respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta
                     ? '✅ ¡Correcto!'
@@ -266,13 +265,16 @@ export default function LeccionDetail() {
                   onClick={siguiente}
                   className="btn btn-lg fw-bold mt-4"
                   style={{
-                    background: "#1cb0f6",
-                    color: "#fff",
-                    border: "none",
+                    background: '#1cb0f6',
+                    color: '#fff',
+                    border: 'none',
                     borderRadius: 10,
-                    textTransform: "uppercase",
+                    textTransform: 'uppercase',
                     letterSpacing: 0.5,
-                    minWidth: 160
+                    minWidth: 160,
+                    fontWeight: 800,
+                    fontSize: '1.1rem',
+                    boxShadow: '0 2px 12px #0005'
                   }}
                 >
                   {actual + 1 === total ? 'Finalizar' : 'Siguiente'}

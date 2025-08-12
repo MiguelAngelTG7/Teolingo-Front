@@ -54,78 +54,82 @@ export default function CursosList() {
   if (error) return <p className="text-danger">{error}</p>;
 
   return (
-    <div className="container py-4" style={{ maxWidth: 700 }}>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 className="duo-title mb-1">
-            Bienvenido{user?.username ? `, ${user.username}` : ''} 
-          </h2>
-          <p className="text-secondary">Explora nuestros cursos disponibles para ti:</p>
+    <div className="min-vh-100" style={{ background: '#111' }}>
+      <div className="container py-4" style={{ maxWidth: 900 }}>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 className="mb-1" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+              Bienvenido{user?.username ? `, ${user.username}` : ''}
+            </h2>
+            <p style={{ color: '#e0e0e0', fontWeight: 500 }}>Explora nuestros cursos disponibles para ti:</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="btn fw-bold rounded-pill"
+            style={{ background: 'transparent', color: '#ff5252', border: '2px solid #ff5252', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: 15 }}
+          >
+            Cerrar sesión
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="btn btn-outline-danger rounded-pill fw-bold"
-        >
-          Cerrar sesión
-        </button>
-      </div>
 
-      {/* Mostrar todos los cursos sin agrupar por categoría */}
-      <div className="row g-4">
-        {cursos.map(curso => (
-          <div key={curso.id} className="col-12 col-md-6">
-            <div
-              className="card shadow-sm rounded-4 h-100 position-relative"
-              style={{ background: "#181818", border: 'none', boxShadow: '0 4px 18px rgba(11,111,191,0.10)', cursor: 'pointer', overflow: 'hidden' }}
-              onClick={() => navigate(`/cursos/${curso.id}`)}
-              title="Ir al curso"
-            >
-              {/* Imagen del curso */}
-              {curso.imagen_url && (
+        {/* Mostrar todos los cursos sin agrupar por categoría */}
+        <div className="row g-4">
+          {cursos.map(curso => (
+            <div key={curso.id} className="col-12 col-md-6">
+              <div
+                className="shadow-sm rounded-4 h-100 position-relative"
+                style={{ background: '#181818', border: '2px solid #fff', boxShadow: '0 4px 18px #0008', cursor: 'pointer', overflow: 'hidden', transition: 'box-shadow 0.2s, transform 0.2s' }}
+                onClick={() => navigate(`/cursos/${curso.id}`)}
+                title="Ir al curso"
+                onMouseOver={e => { e.currentTarget.style.boxShadow = '0 12px 36px #1cb0f633'; e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'; }}
+                onMouseOut={e => { e.currentTarget.style.boxShadow = '0 4px 18px #0008'; e.currentTarget.style.transform = 'none'; }}
+              >
+                {/* Imagen del curso (por convención: curso_{curso.id}.png) */}
                 <img
-                  src={curso.imagen_url}
+                  src={`/assets/curso_${curso.id}.png`}
                   alt={curso.titulo}
-                  style={{ width: '100%', height: 360, objectFit: 'cover', display: 'block', background: '#222' }}
+                  style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block', background: '#222' }}
+                  onError={e => { e.target.style.display = 'none'; }}
                 />
-              )}
-              {/* Barra de progreso y datos debajo de la imagen, con fondo diferenciado */}
-              <div style={{ background: '#232323', padding: '16px 16px 0 16px'}}>
-                {progresos[curso.id] && (
-                  <div className="progress mb-2" style={{ height: 7, background: '#222' }}>
-                    <div
-                      className="progress-bar"
-                      role="progressbar"
-                      style={{ width: `${progresos[curso.id].porcentaje || 0}%`, background: '#d4dee6ff' }}
-                      aria-valuenow={progresos[curso.id].porcentaje || 0}
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                    />
-                  </div>
-                )}
-                <div className="d-flex justify-content-between align-items-center mb-2" style={{ fontSize: 15, fontWeight: 500, color: '#b8c7d1' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <i className="bi bi-journal-text" style={{ fontSize: 17, color: '#4c789c' }}></i>
-                    {curso.lecciones_count} Lecciones
-                  </span>
+                {/* Barra de progreso y datos debajo de la imagen, con fondo diferenciado */}
+                <div style={{ background: '#232323', padding: '16px 16px 0 16px', borderBottom: '2px solid #fff' }}>
                   {progresos[curso.id] && (
-                    <span>
-                      {progresos[curso.id].porcentaje ? `${progresos[curso.id].porcentaje.toFixed(1)}% Completado` : '0% Completado'}
+                    <div className="progress mb-2" style={{ height: 8, background: '#222', borderRadius: 8 }}>
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{ width: `${progresos[curso.id].porcentaje || 0}%`, background: 'linear-gradient(90deg, #1cb0f6 60%, #81bfff 100%)', borderRadius: 8 }}
+                        aria-valuenow={progresos[curso.id].porcentaje || 0}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      />
+                    </div>
+                  )}
+                  <div className="d-flex justify-content-between align-items-center mb-2" style={{ fontSize: 15, fontWeight: 600, color: '#e0e0e0' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <i className="bi bi-journal-text" style={{ fontSize: 17, color: '#1cb0f6' }}></i>
+                      {curso.lecciones_count} Lecciones
                     </span>
-                  )}
+                    {progresos[curso.id] && (
+                      <span style={{ color: '#1cb0f6', fontWeight: 700 }}>
+                        {progresos[curso.id].porcentaje ? `${progresos[curso.id].porcentaje.toFixed(1)}% Completado` : '0% Completado'}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-              {/* Título y categoría debajo */}
-              <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{ background: 'transparent', minHeight: 100 }}>
-                <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008' }}>{curso.titulo}</h3>
-                <div className="mb-2" style={{ fontSize: '1.05rem', color: '#b0b0b0', fontWeight: 500, textShadow: '0 1px 4px #0007' }}>
-                  {curso.categoria?.nombre && (
-                    <span>{curso.categoria.nombre}</span>
-                  )}
+                {/* Título y categoría debajo */}
+                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{ background: 'transparent', minHeight: 100 }}>
+                  <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
+                  <div className="mb-2" style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
+                    {curso.categoria?.nombre && (
+                      <span>{curso.categoria.nombre}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
