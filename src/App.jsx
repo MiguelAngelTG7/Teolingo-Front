@@ -6,6 +6,8 @@ import CursosList from './components/CursosList';
 import CursoDetail from './components/CursoDetail'; 
 import LeccionDetail from './components/LeccionDetail';
 import CursoProgreso from './components/CursoProgreso';
+import ExamenFinal from './components/ExamenFinal';
+import ExamenFinalQuiz from './components/ExamenFinalQuiz'; // Asegúrate de importar el componente
 
 function App() {
   const { accessToken } = useAuth();
@@ -39,6 +41,17 @@ function App() {
       <Route
         path="/lecciones/:id"
         element={accessToken ? <LeccionDetail /> : <Navigate to="/login" />}
+      />
+
+
+      <Route
+        path="/examen-final/:id"
+        element={accessToken ? <ExamenFinal /> : <Navigate to="/login" />}
+      />
+
+      <Route
+        path="/examen-final/:id/quiz"
+        element={accessToken ? <ExamenFinalQuiz /> : <Navigate to="/login" />}
       />
 
       <Route

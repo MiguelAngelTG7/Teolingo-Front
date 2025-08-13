@@ -68,8 +68,7 @@ export default function CursoDetail() {
           {curso.lecciones && (
             <div className="text-center" style={{ color: '#1cb0f6', fontWeight: 700, fontSize: 18, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>
               {(() => {
-                const sortedLecciones = [...curso.lecciones].sort((a, b) => a.id - b.id);
-                const idx = sortedLecciones.findIndex(l => l.id === leccionSeleccionada.id);
+                const idx = curso.lecciones.findIndex(l => l.id === leccionSeleccionada.id);
                 return idx !== -1 ? `Lección ${idx + 1}` : '';
               })()}
             </div>
@@ -227,7 +226,7 @@ export default function CursoDetail() {
           {/* Datos de lecciones y duración */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 32, marginBottom: 18 }}>
             <span style={{ color: '#fff', fontWeight: 600, fontSize: 16, letterSpacing: 1 }}>
-              {curso.lecciones?.length || 0} LECCIONES
+              {curso.lecciones?.length|| 0} LECCIONES
             </span>
             {/* Duración total placeholder, puedes reemplazar por duración real si la tienes */}
           </div>
@@ -237,13 +236,13 @@ export default function CursoDetail() {
       <div className="container" style={{ maxWidth: 700, marginTop: 32 }}>
         {/* Descripción destacada (primer párrafo en negrita) */}
         {curso.descripcion && (
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: 18, marginBottom: 20, lineHeight: 1.4 }}>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: 18, marginBottom: 20, lineHeight: 1.5 }}>
             {curso.descripcion.split('\n')[0]}
           </div>
         )}
         {/* Texto largo (resto de la descripción, con saltos de línea como párrafos) */}
         {curso.descripcion && curso.descripcion.split('\n').slice(1).join('\n') && (
-          <div style={{ color: '#e0e0e0', fontSize: 17, marginBottom: 32, lineHeight: 1.7 }}>
+          <div style={{ color: '#e0e0e0', fontSize: 17, marginBottom: 32, lineHeight: 1.5 }}>
             {curso.descripcion.split('\n').slice(1).map((p, i) =>
               p.trim() ? <p key={i} style={{ marginBottom: 16 }}>{p}</p> : null
             )}
@@ -252,7 +251,7 @@ export default function CursoDetail() {
         {/* Listado de lecciones */}
         <div className="row justify-content-center">
           {curso.lecciones && [...curso.lecciones]
-            .sort((a, b) => a.id - b.id)
+            // .sort((a, b) => a.id - b.id)
             .map((leccion, idx) => {
               // Buscar progreso de la lección
               let completada = false;
@@ -260,6 +259,8 @@ export default function CursoDetail() {
                 const prog = progreso.lecciones.find(l => l.leccion === leccion.id);
                 completada = prog ? !!prog.completado : false;
               }
+              // Calcular el número de lección según la posición real en el array
+              const numeroLeccion = curso.lecciones.findIndex(l => l.id === leccion.id) + 1;
               return (
                 <div key={leccion.id} className="col-12 mb-3">
                   <div
@@ -310,7 +311,7 @@ export default function CursoDetail() {
                     }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        Lección {idx + 1}
+                        Lección {numeroLeccion}
                       </div>
                       <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
                         {leccion.titulo}
@@ -325,6 +326,65 @@ export default function CursoDetail() {
                 </div>
               );
             })}
+          {/* Card de acceso al examen final */}
+          {curso.lecciones && progreso && progreso.lecciones && progreso.lecciones.length === 10 && progreso.lecciones.every(l => l.completado) && (
+            <div className="col-12 mb-3">
+              <div
+                className="lesson-card text-white"
+                style={{
+                  background: '#181818',
+                  border: '2px solid #1cb0f6',
+                  borderRadius: 12,
+                  padding: '22px 24px',
+                  marginBottom: 8,
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  fontSize: 20,
+                  boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
+                  transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
+                  textAlign: 'left',
+                  position: 'relative',
+                  letterSpacing: 0.2,
+                  outline: 'none',
+                  userSelect: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                tabIndex={0}
+                onClick={() => navigate(`/examen-final/${id}`)}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') navigate(`/examen-final/${id}`); }}
+                onMouseOver={e => {
+                  e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
+                  e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                  e.currentTarget.style.borderColor = '#1cb0f6';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.borderColor = '#1cb0f6';
+                }}
+              >
+                <span style={{
+                  display: 'inline-block',
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  border: '2.5px solid #1cb0f6',
+                  background: '#1cb0f6',
+                  marginRight: 18,
+                  transition: 'background 0.2s',
+                }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                    Evaluación Final
+                  </div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
+                    Accede al Examen Final para Obtener tu Certificado
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

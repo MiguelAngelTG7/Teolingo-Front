@@ -1,3 +1,5 @@
+// Obtener el examen final de un curso
+export const getExamenFinal = (cursoId) => api.get(`/cursos/${cursoId}/examen-final/`);
 // src/api/api.js
 import axios from 'axios';
 

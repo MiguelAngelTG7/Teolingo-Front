@@ -87,11 +87,13 @@ export default function LeccionDetail() {
   return (
     <div className="min-vh-100" style={{ background: '#111' }}>
       <div className="container py-5" style={{ maxWidth: 540 }}>
-        {/* Lección X debajo del título */}
+        {/* Lección X debajo del título, ocultar si es la última lección */}
         <div className="mb-1 text-center">
-          <span style={{ color: '#1cb0f6', fontWeight: 700, fontSize: '2.3rem', letterSpacing: 1 }}>
-            Lección {leccion.id|| 1}: Quiz
-          </span>
+          {leccion && leccion.titulo !== 'EVALUACION FINAL' ? (
+            <span style={{ color: '#1cb0f6', fontWeight: 700, fontSize: '2.3rem', letterSpacing: 1 }}>
+              Lección {leccion.id || 1}: Quiz
+            </span>
+          ) : null}
         </div>
         <br />
         {/* Barra de progreso */}
