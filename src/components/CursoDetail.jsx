@@ -223,7 +223,7 @@ export default function CursoDetail() {
             </span>
           </div>
           {/* Título */}
-          <h1 style={{ color: '#fff', fontWeight: 800, fontSize: 32, marginBottom: 12, textShadow: '0 2px 12px #000a' }}>{curso.titulo}</h1>
+          <h1 style={{ color: '#fff', fontWeight: 800, fontSize: 50, marginBottom: 12, textShadow: '0 2px 12px #000a' }}>{curso.titulo}</h1>
           {/* Datos de lecciones y duración */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 32, marginBottom: 18 }}>
             <span style={{ color: '#fff', fontWeight: 600, fontSize: 16, letterSpacing: 1 }}>
@@ -253,55 +253,78 @@ export default function CursoDetail() {
         <div className="row justify-content-center">
           {curso.lecciones && [...curso.lecciones]
             .sort((a, b) => a.id - b.id)
-            .map((leccion, idx) => (
-              <div key={leccion.id} className="col-12 mb-3">
-                <div
-                  className="lesson-card text-white"
-                  style={{
-                    background: '#181818',
-                    border: '2px solid #fff',
-                    borderRadius: 12,
-                    padding: '22px 24px',
-                    marginBottom: 8,
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: 20,
-                    boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
-                    transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
-                    textAlign: 'left',
-                    position: 'relative',
-                    letterSpacing: 0.2,
-                    outline: 'none',
-                    userSelect: 'none',
-                  }}
-                  tabIndex={0}
-                  onClick={() => setLeccionSeleccionada(leccion)}
-                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setLeccionSeleccionada(leccion); }}
-                  onMouseOver={e => {
-                    e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
-                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                    e.currentTarget.style.borderColor = '#1cb0f6';
-                  }}
-                  onMouseOut={e => {
-                    e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.borderColor = '#fff';
-                  }}
-                >
-                  <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                    Lección {idx + 1}
-                  </div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
-                    {leccion.titulo}
-                  </div>
-                  {leccion.descripcion && (
-                    <div style={{ color: '#e0e0e0', fontWeight: 400, fontSize: 16, marginTop: 2, opacity: 0.85 }}>
-                      {leccion.descripcion}
+            .map((leccion, idx) => {
+              // Buscar progreso de la lección
+              let completada = false;
+              if (progreso && progreso.lecciones) {
+                const prog = progreso.lecciones.find(l => l.leccion === leccion.id);
+                completada = prog ? !!prog.completado : false;
+              }
+              return (
+                <div key={leccion.id} className="col-12 mb-3">
+                  <div
+                    className="lesson-card text-white"
+                    style={{
+                      background: '#181818',
+                      border: '2px solid #fff',
+                      borderRadius: 12,
+                      padding: '22px 24px',
+                      marginBottom: 8,
+                      cursor: 'pointer',
+                      fontWeight: 700,
+                      fontSize: 20,
+                      boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
+                      transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
+                      textAlign: 'left',
+                      position: 'relative',
+                      letterSpacing: 0.2,
+                      outline: 'none',
+                      userSelect: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    tabIndex={0}
+                    onClick={() => setLeccionSeleccionada(leccion)}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setLeccionSeleccionada(leccion); }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
+                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                      e.currentTarget.style.borderColor = '#1cb0f6';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.borderColor = '#fff';
+                    }}
+                  >
+                    {/* Círculo de progreso */}
+                    <span style={{
+                      display: 'inline-block',
+                      width: 28,
+                      height: 28,
+                      borderRadius: '50%',
+                      border: '2.5px solid #1cb0f6',
+                      background: completada ? '#1cb0f6' : 'transparent',
+                      marginRight: 18,
+                      transition: 'background 0.2s',
+                    }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                        Lección {idx + 1}
+                      </div>
+                      <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
+                        {leccion.titulo}
+                      </div>
+                      {leccion.descripcion && (
+                        <div style={{ color: '#e0e0e0', fontWeight: 400, fontSize: 16, marginTop: 2, opacity: 0.85 }}>
+                          {leccion.descripcion}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       </div>
     </div>
