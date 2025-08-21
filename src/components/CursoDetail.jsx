@@ -75,17 +75,19 @@ export default function CursoDetail() {
           )}
           <h2 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 33, letterSpacing: 0.5, textTransform: 'uppercase' }}>{leccionSeleccionada.titulo}</h2>
           {/* Video de presentación */}
-          <div className="mb-4 text-center">
-            <iframe
-              width="100%"
-              height="360"
-              src={leccionSeleccionada.video_url.replace('watch?v=', 'embed/')}
-              title="Video de la lección"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{ borderRadius: 12, background: '#000', border: 'none' }}
-            />
-          </div>
+{/*
+<div className="mb-4 text-center">
+  <iframe
+    width="100%"
+    height="360"
+    src={leccionSeleccionada.video_url.replace('watch?v=', 'embed/')}
+    title="Video de la lección"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ borderRadius: 12, background: '#000', border: 'none' }}
+  />
+</div>
+*/}
           {/* Descripción de la lección */}
           <div className="mb-4 text-center">
             <div
