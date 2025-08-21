@@ -1,5 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/axiosConfig';
 import { setAuthToken } from '../api/api';
 
 const AuthContext = createContext();
@@ -39,17 +40,8 @@ export const AuthProvider = ({ children }) => {
   // Función para hacer login
   const login = async (username, password) => {
     try {
-      const res = await fetch('http://localhost:8000/api/token/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.detail || 'Login failed');
-      }
+      const res = await api.post('token/', { username, password });
+      const data = res.data;
 
       if (!isTokenValid(data.access)) {
         throw new Error('Token recibido no válido');
@@ -65,7 +57,9 @@ export const AuthProvider = ({ children }) => {
 
       return true;
     } catch (err) {
-      console.error('Login error:', err.message);
+      // Axios error: puede tener response.data.detail
+      const detail = err?.response?.data?.detail || err.message;
+      console.error('Login error:', detail);
       return false;
     }
   };
