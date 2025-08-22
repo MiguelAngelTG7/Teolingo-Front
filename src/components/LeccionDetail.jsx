@@ -63,13 +63,17 @@ export default function LeccionDetail() {
   const guardarProgreso = (resultado) => {
     const API_URL = import.meta.env.VITE_API_URL;
     
-    fetch(`${API_URL}/api/lecciones/${id}/respuesta/`, {
+    fetch(`${API_URL}/api/lecciones/${id}/guardar-progreso/`, {  // Updated endpoint
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       },
-      body: JSON.stringify({ puntaje: resultado })
+      body: JSON.stringify({ 
+        puntaje: resultado,
+        ejercicios_completados: leccion.ejercicios.length,
+        ejercicios_correctos: correctas
+      })
     })
       .then(async res => {
         if (!res.ok) {
@@ -83,7 +87,7 @@ export default function LeccionDetail() {
       })
       .catch(err => {
         console.error('Error guardando progreso:', err);
-        alert("Error al guardar el progreso: " + err.message);
+        alert("Error al guardar el progreso. Por favor intenta nuevamente.");
       });
   };
 
