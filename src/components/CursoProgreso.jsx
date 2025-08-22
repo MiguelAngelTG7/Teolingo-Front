@@ -14,7 +14,8 @@ export default function CursoProgreso() {
       navigate('/login');
       return;
     }
-    fetch(`http://localhost:8000/api/cursos/${id}/progreso/`, {
+    const API_URL = import.meta.env.VITE_API_BASE_URL;
+    fetch(`${API_URL}/cursos/${id}/progreso/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }

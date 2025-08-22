@@ -4,7 +4,7 @@ export const getExamenFinal = (cursoId) => api.get(`/cursos/${cursoId}/examen-fi
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL, // Ya incluye /api
 });
 
 // Función opcional para setear el token globalmente
