@@ -5,7 +5,12 @@ import '../App.css';
 
 export default function CursoDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const navigate              // Buscar progreso de la lección
+              let completada = false;
+              if (progreso && progreso.lecciones) {
+                const progresoLeccion = progreso.lecciones.find(l => l.leccion_id === leccion.id);
+                completada = progresoLeccion && progresoLeccion.completado;
+              }useNavigate();
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,13 +28,20 @@ export default function CursoDetail() {
         setLoading(false);
       });
 
-    fetch(`http://localhost:8000/api/cursos/${id}/progreso/`, {
+    const API_URL = import.meta.env.VITE_API_BASE_URL;
+    fetch(`${API_URL}/cursos/${id}/progreso/`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     })
       .then(res => res.json())
-      .then(data => setProgreso(data));
+      .then(data => {
+        console.log('Progreso recibido:', data);
+        setProgreso(data);
+      })
+      .catch(err => {
+        console.error('Error obteniendo progreso:', err);
+      });
   }, [id]);
 
   if (loading) return <p className="text-secondary">Cargando curso...</p>;
@@ -329,7 +341,8 @@ export default function CursoDetail() {
               );
             })}
           {/* Card de acceso al examen final */}
-          {curso.lecciones && progreso && progreso.lecciones && progreso.lecciones.length === 10 && progreso.lecciones.every(l => l.completado) && (
+          {curso.lecciones && progreso && progreso.lecciones && curso.lecciones.length > 0 && 
+           progreso.lecciones.filter(l => l.completado).length === curso.lecciones.length && (
             <div className="col-12 mb-3">
               <div
                 className="lesson-card text-white"
