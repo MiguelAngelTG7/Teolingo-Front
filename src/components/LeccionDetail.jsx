@@ -63,7 +63,7 @@ export default function LeccionDetail() {
   const guardarProgreso = (resultado) => {
     const API_URL = import.meta.env.VITE_API_BASE_URL;
     
-    fetch(`${API_URL}/api/lecciones/${id}/guardar-progreso/`, {  // Updated endpoint
+    fetch(`${API_URL}/api/lecciones/${id}/respuesta/`, {  // Using correct endpoint
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
