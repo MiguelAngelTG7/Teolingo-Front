@@ -61,7 +61,9 @@ export default function LeccionDetail() {
 
   // Guardar progreso en el servidor
   const guardarProgreso = (resultado) => {
-    fetch(`http://localhost:8000/api/lecciones/${id}/respuesta/`, { // <-- URL completa al backend
+    const API_URL = import.meta.env.VITE_API_URL;
+    
+    fetch(`${API_URL}/api/lecciones/${id}/respuesta/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -77,9 +79,10 @@ export default function LeccionDetail() {
         return res.json();
       })
       .then(data => {
-        // éxito: puedes mostrar mensaje o redirigir
+        console.log('Progreso guardado:', data);
       })
       .catch(err => {
+        console.error('Error guardando progreso:', err);
         alert("Error al guardar el progreso: " + err.message);
       });
   };
