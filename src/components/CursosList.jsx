@@ -25,7 +25,8 @@ export default function CursosList() {
         setLoading(false);
         // Cargar progreso de cada curso
         res.data.forEach(curso => {
-          fetch(`http://localhost:8000/api/cursos/${curso.id}/progreso/`, {
+          const API_URL = import.meta.env.VITE_API_BASE_URL;
+          fetch(`${API_URL}/cursos/${curso.id}/progreso/`, {
             headers: {
               'Authorization': `Bearer ${accessToken}`
             }

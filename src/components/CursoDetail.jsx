@@ -5,12 +5,7 @@ import '../App.css';
 
 export default function CursoDetail() {
   const { id } = useParams();
-  const navigate              // Buscar progreso de la lección
-              let completada = false;
-              if (progreso && progreso.lecciones) {
-                const progresoLeccion = progreso.lecciones.find(l => l.leccion_id === leccion.id);
-                completada = progresoLeccion && progresoLeccion.completado;
-              }useNavigate();
+  const navigate = useNavigate(); // Buscar progreso de la lección
   const [curso, setCurso] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,30 +13,38 @@ export default function CursoDetail() {
   const [progreso, setProgreso] = useState(null);
 
   useEffect(() => {
-    getCursoDetail(id)
-      .then(res => {
-        setCurso(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('No se pudo cargar el curso.');
-        setLoading(false);
-      });
-
     const API_URL = import.meta.env.VITE_API_BASE_URL;
-    fetch(`${API_URL}/cursos/${id}/progreso/`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
+    console.log('API URL:', API_URL); // Para debug
+
+    // Función para obtener el progreso
+    const fetchProgreso = async () => {
+      try {
+        const res = await fetch(`${API_URL}/cursos/${id}/progreso/`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
         console.log('Progreso recibido:', data);
         setProgreso(data);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Error obteniendo progreso:', err);
-      });
+      }
+    };
+
+    // Obtener detalles del curso y progreso
+    Promise.all([
+      getCursoDetail(id).then(res => {
+        setCurso(res.data);
+      }),
+      fetchProgreso()
+    ]).catch(err => {
+      console.error('Error:', err);
+      setError('No se pudo cargar la información del curso.');
+    }).finally(() => {
+      setLoading(false);
+    });
   }, [id]);
 
   if (loading) return <p className="text-secondary">Cargando curso...</p>;
