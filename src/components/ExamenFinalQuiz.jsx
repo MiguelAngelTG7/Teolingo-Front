@@ -183,6 +183,27 @@ export default function ExamenFinalQuiz() {
                 </a>
               </div>
             )}
+            {/* Mover el botón Inicio aquí, dentro del bloque terminado */}
+            <div className="mt-4">
+              <button
+                className="btn fw-bold"
+                style={{
+                  background: '#232323',
+                  color: '#fff',
+                  border: '2px solid #1cb0f6',
+                  borderRadius: 10,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                  textTransform: 'uppercase',
+                  minWidth: 120,
+                  padding: '8px 18px',
+                  fontWeight: 800,
+                }}
+                onClick={() => navigate('/')}
+              >
+                ← Inicio
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -298,27 +319,7 @@ export default function ExamenFinalQuiz() {
             )}
           </>
         )}
-        {/* Agregar el botón Inicio al final del container */}
-        <div className="text-center mt-4">
-          <button
-            className="btn fw-bold"
-            style={{
-              background: '#232323',
-              color: '#fff',
-              border: '2px solid #1cb0f6',
-              borderRadius: 10,
-              fontSize: 16,
-              letterSpacing: 0.5,
-              textTransform: 'uppercase',
-              minWidth: 120,
-              padding: '8px 18px',
-              fontWeight: 800,
-            }}
-            onClick={() => navigate('/')}
-          >
-            ← Inicio
-          </button>
-        </div>
+        {/* Eliminar el botón Inicio que estaba aquí fuera */}
       </div>
     </div>
   );
