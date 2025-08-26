@@ -407,6 +407,7 @@ export default function CursoDetail() {
           )}
         </div>
       </div>
+      </div>
     </div>
   );
 }
