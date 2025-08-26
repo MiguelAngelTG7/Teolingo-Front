@@ -59,10 +59,10 @@ export default function CursoDetail() {
       <button
         className="btn fw-bold"
         style={{
-          position: 'absolute',
+          position: 'fixed',
           top: 24,
           left: 24,
-          zIndex: 100,
+          zIndex: 9999,
           background: '#232323',
           color: '#fff',
           border: '2px solid #1cb0f6',
@@ -77,7 +77,7 @@ export default function CursoDetail() {
         }}
         onClick={() => setLeccionSeleccionada(null)}
       >
-        ← LECCIONES
+        ← Lecciones
       </button>
           {/* Indicador de número de lección */}
           {curso.lecciones && (
