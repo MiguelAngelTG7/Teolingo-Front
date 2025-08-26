@@ -163,15 +163,15 @@ export default function CursoDetail() {
 
   // Listado de lecciones
   return (
-    <div className="min-vh-100" style={{ background: '#111', position: 'relative' }}>
-      {/* Botón para regresar al dashboard */}
+    <div style={{ position: 'relative' }}>
+      {/* Botón para regresar a cursos - Fijo en la esquina superior izquierda */}
       <button
         className="btn fw-bold"
         style={{
           position: 'fixed',
           top: 24,
           left: 24,
-          zIndex: 100,
+          zIndex: 9999,
           background: '#232323',
           color: '#fff',
           border: '2px solid #1cb0f6',
@@ -188,6 +188,8 @@ export default function CursoDetail() {
       >
         &lt; Cursos
       </button>
+      
+      <div className="min-vh-100" style={{ background: '#111', position: 'relative', paddingTop: '24px' }}>
       {/* Cabecera con imagen de fondo y overlay */}
       <div style={{
         position: 'relative',
