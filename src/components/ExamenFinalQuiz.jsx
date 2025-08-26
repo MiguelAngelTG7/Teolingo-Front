@@ -71,7 +71,7 @@ export default function ExamenFinalQuiz() {
   const porcentaje = Math.round((correctas / total) * 100);
 
   const generarCertificado = () => {
-    // Obtener usuario
+  // Obtener usuario
     const user = JSON.parse(localStorage.getItem('user'));
   // Landscape
   const doc = new jsPDF({ orientation: 'landscape' });
@@ -126,30 +126,8 @@ export default function ExamenFinalQuiz() {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center" style={{ background: '#111', minHeight: '100vh', padding: '32px 0', position: 'relative' }}>
-      {/* Botón regresar fuera de la card */}
-      <button
-        className="btn fw-bold"
-        style={{
-          position: 'absolute',
-          top: 24,
-          left: 24,
-          zIndex: 100,
-          background: '#232323',
-          color: '#fff',
-          border: '2px solid #1cb0f6',
-          borderRadius: 10,
-          fontSize: 16,
-          letterSpacing: 0.5,
-          textTransform: 'uppercase',
-          minWidth: 120,
-          padding: '8px 18px',
-          fontWeight: 800,
-        }}
-        onClick={() => navigate(-1)}
-      >
-        &larr; CURSO
-      </button>
+    <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center" 
+         style={{ background: '#111', minHeight: '100vh', padding: '32px 0', position: 'relative' }}>
       <div className="container" style={{ maxWidth: 700, background: '#111', borderRadius: 18, padding: '32px 24px', boxShadow: '0 2px 16px #0006', position: 'relative' }}>
         <h1 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 33, letterSpacing: 0.5, textTransform: 'uppercase' }}>{examen.curso.titulo}</h1>
         <h2 className="mb-3 text-center" style={{ color: '#1cb0f6', fontWeight: 800, fontSize: 28, letterSpacing: 0.5 }}>Evaluación Final</h2>
@@ -320,6 +298,27 @@ export default function ExamenFinalQuiz() {
             )}
           </>
         )}
+        {/* Agregar el botón Inicio al final del container */}
+        <div className="text-center mt-4">
+          <button
+            className="btn fw-bold"
+            style={{
+              background: '#232323',
+              color: '#fff',
+              border: '2px solid #1cb0f6',
+              borderRadius: 10,
+              fontSize: 16,
+              letterSpacing: 0.5,
+              textTransform: 'uppercase',
+              minWidth: 120,
+              padding: '8px 18px',
+              fontWeight: 800,
+            }}
+            onClick={() => navigate('/')}
+          >
+            ← Inicio
+          </button>
+        </div>
       </div>
     </div>
   );
