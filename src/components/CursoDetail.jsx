@@ -186,7 +186,7 @@ export default function CursoDetail() {
         }}
         onClick={() => navigate('/cursos')}
       >
-        &lt; Cursos
+        ← Cursos
       </button>
       
       <div className="min-vh-100" style={{ background: '#111', position: 'relative', paddingTop: '24px' }}>
