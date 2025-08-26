@@ -49,34 +49,7 @@ export default function CursoProgreso() {
 
   return (
     <div className="min-vh-100" style={{ background: '#111', position: 'relative' }}>
-      {/* Botón para regresar a las lecciones del curso */}
-      <button
-        style={{
-          position: 'absolute',
-          top: 24,
-          left: 24,
-          zIndex: 100,
-          background: 'transparent',
-          color: '#fff',
-          border: '2px solid #1cb0f6',
-          borderRadius: 14,
-          fontWeight: 700,
-          fontSize: '1.25rem',
-          letterSpacing: 0.5,
-          textTransform: 'uppercase',
-          minWidth: 180,
-          padding: '8px 28px',
-          boxShadow: 'none',
-          outline: 'none',
-          transition: 'border-color 0.2s, color 0.2s',
-          marginTop: 8,
-          cursor: 'pointer',
-          display: 'inline-block',
-        }}
-        onClick={() => navigate(`/cursos/${id}`)}
-      >
-        <span style={{ fontSize: '1.2rem', fontWeight: 900, marginRight: 8 }}>←</span> Curso
-      </button>
+
       <div className="container py-5" style={{ maxWidth: 900 }}>
         <h2 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>{curso.curso_titulo} - Progreso</h2>
         <div className="mb-4 text-center" style={{ background: '#181818', borderRadius: 16, boxShadow: '0 2px 16px #0006', padding: '28px 24px', color: '#fff' }}>
@@ -169,6 +142,30 @@ export default function CursoProgreso() {
             </button>
           </div>
         )}
+        
+        {/* Botón de Inicio */}
+        <div className="text-center mt-5">
+          <button
+            className="btn fw-bold"
+            style={{
+              background: '#232323',
+              color: '#fff',
+              border: '2px solid #1cb0f6',
+              borderRadius: 10,
+              fontSize: 18,
+              letterSpacing: 0.5,
+              textTransform: 'uppercase',
+              minWidth: 200,
+              padding: '12px 0',
+              fontWeight: 800,
+              boxShadow: '0 2px 12px #0005',
+              marginTop: 8
+            }}
+            onClick={() => navigate('/')}
+          >
+            Inicio
+          </button>
+        </div>
       </div>
     </div>
   );

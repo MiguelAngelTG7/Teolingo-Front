@@ -184,9 +184,9 @@ export default function CursoDetail() {
           fontWeight: 800,
           boxShadow: '0 2px 12px #0005',
         }}
-        onClick={() => navigate('/cursos')}
+        onClick={() => navigate('/')}
       >
-        ← Cursos
+        ← Inicio
       </button>
       
       <div className="min-vh-100" style={{ background: '#111', position: 'relative', paddingTop: '24px' }}>
