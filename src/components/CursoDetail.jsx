@@ -168,7 +168,7 @@ export default function CursoDetail() {
       <button
         className="btn fw-bold"
         style={{
-          position: 'absolute',
+          position: 'fixed',
           top: 24,
           left: 24,
           zIndex: 100,
@@ -184,9 +184,9 @@ export default function CursoDetail() {
           fontWeight: 800,
           boxShadow: '0 2px 12px #0005',
         }}
-        onClick={() => window.location.href = '/dashboard'}
+        onClick={() => navigate('/cursos')}
       >
-        ← Dashboard
+        &lt; Cursos
       </button>
       {/* Cabecera con imagen de fondo y overlay */}
       <div style={{
