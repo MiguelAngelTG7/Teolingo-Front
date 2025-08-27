@@ -1,43 +1,75 @@
 // src/pages/Login.jsx
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import logo from '../assets/teolingo-logo.png';
 import '../App.css';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login(username, password);
-    if (success) {
-      navigate('/');
-    } else {
-      setError('Credenciales incorrectas');
+    setLoading(true);
+    setError('');
+    try {
+      // Usamos el email como username
+      const success = await login(username, password);
+      if (success) {
+        // Pequeño delay para asegurar que el token se guarde
+        setTimeout(() => {
+          navigate('/cursos');
+        }, 100);
+      } else {
+        setError('Credenciales incorrectas');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 duolingo-font" style={{ background: '#111' }}>
-      <div className="shadow-lg p-4 rounded-4" style={{ maxWidth: 400, width: '100%', background: '#181818', border: '2px solid #fff', color: '#fff', boxShadow: '0 2px 16px #0006' }}>
-        <div className="text-center mb-3">
-          <div style={{ background: '#232323', borderRadius: '50%', width: 120, height: 120, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #0005' }}>
-            <img src={logo} alt="Teolingo Logo" style={{ width: 90, height: 90 }} />
-          </div>
-          <h1 className="mt-3 mb-1 duolingo-font" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>Teolingo</h1>
+    <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center" 
+         style={{ background: '#111' }}>
+      <div className="container" style={{ 
+        maxWidth: 400, 
+        background: '#181818', 
+        padding: '32px 24px', 
+        borderRadius: '18px',
+        border: '3px solid #ffffffaf',
+        boxShadow: '0 8px 32px rgba(255,255,255,0.1)'
+      }}>
+        <div className="text-center mb-4">
+          <img src={logo} alt="Teolingo Logo" style={{ width: 140, height: 140, marginBottom: 8 }} />
+          <h1 className="mb-1 duolingo-font" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>Teolingo</h1>
         </div>
         <h2 className="fw-bold mb-4 text-center duolingo-font" style={{ color: '#1cb0f6', fontWeight: 800, fontSize: 22, letterSpacing: 0.5 }}>Iniciar Sesión</h2>
-        {error && <div className="alert alert-danger py-2" style={{ background: '#ff5252', color: '#fff', border: 'none', fontWeight: 700 }}>{error}</div>}
+        
+        {error && (
+          <div className="alert" style={{ 
+            background: '#ff5b5b20', 
+            color: '#ff5b5b',
+            border: '1px solid #ff5b5b',
+            borderRadius: '10px',
+            padding: '10px 15px'
+          }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <input
               type="text"
-              placeholder="Usuario"
+              placeholder="Email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="form-control form-control-lg rounded-pill"
@@ -58,12 +90,53 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="btn btn-duo btn-lg w-100"
-            style={{ background: '#1cb0f6', borderColor: '#1cb0f6', color: '#fff', fontWeight: 800, fontSize: 18, letterSpacing: 0.5, textTransform: 'uppercase', boxShadow: '0 2px 12px #0005' }}
+            className="btn w-100"
+            disabled={loading}
+            style={{
+              background: loading ? '#ccc' : '#1cb0f6',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '12px',
+              fontSize: '17px',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              minWidth: '180px',
+              fontWeight: '800'
+            }}
           >
-            Entrar
+            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
+
+        <div className="text-center mt-4">
+          <div className="mb-3">
+            <Link 
+              to="/solicitar-reset-password"
+              style={{ 
+                color: '#1cb0f6',
+                textDecoration: 'none',
+                fontSize: '14px',
+                letterSpacing: '0.5px',
+                fontWeight: '600'
+              }}
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
+          <Link 
+            to="/register" 
+            style={{ 
+              color: '#1cb0f6',
+              textDecoration: 'none',
+              fontSize: '16px',
+              letterSpacing: '0.5px',
+              fontWeight: '700'
+            }}
+          >
+            ¿Nuevo usuario? Regístrate
+          </Link>
+        </div>
       </div>
     </div>
   );

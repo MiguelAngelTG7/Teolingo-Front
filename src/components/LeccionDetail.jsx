@@ -1,6 +1,6 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { getLeccion } from '../api/api';
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getLeccion } from "../api/axiosConfig";
 
 export default function LeccionDetail() {
   const { id } = useParams();

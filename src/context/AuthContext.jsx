@@ -1,77 +1,86 @@
 // src/context/AuthContext.jsx
-import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api/axiosConfig';
-import { setAuthToken } from '../api/api';
+import { createContext, useContext, useState, useEffect } from "react";
+import { login as apiLogin } from "../api/axiosConfig";
 
 const AuthContext = createContext();
 
+const getInitialState = () => {
+  try {
+    const token = localStorage.getItem("accessToken") || null;
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+    return { token, user };
+  } catch (error) {
+    console.error("Error loading auth state:", error);
+    // Si hay algún error, limpiamos el localStorage y retornamos estado inicial limpio
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    return { token: null, user: null };
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(null);
-  const [user, setUser] = useState(null);
+  const initialState = getInitialState();
+  const [accessToken, setAccessToken] = useState(initialState.token);
+  const [user, setUser] = useState(initialState.user);
 
-  // Verificar si el token está expirado
-  const isTokenValid = (token) => {
+  const login = async (email, password) => {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expiryTime = payload.exp * 1000;
-      return expiryTime > Date.now();
-    } catch (error) {
-      console.error('Token inválido o malformado');
+      const data = await apiLogin(email, password);
+      if (data.access) {
+        setAccessToken(data.access);
+        
+        // Si obtenemos datos del usuario, actualizamos el estado
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        } else {
+          // Si no hay datos de usuario en la respuesta, intentamos obtenerlos del localStorage
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUser(parsedUser);
+          }
+        }
+        return true;
+      }
       return false;
-    }
-  };
-
-  // Cargar token y usuario al iniciar
-  useEffect(() => {
-    const savedToken = localStorage.getItem('accessToken');
-    const savedUser = localStorage.getItem('user');
-
-    if (savedToken && savedUser) {
-      if (isTokenValid(savedToken)) {
-        setAccessToken(savedToken);
-        setUser(JSON.parse(savedUser));
-        setAuthToken(savedToken);
-      } else {
-        logout(); // token inválido o expirado
-      }
-    }
-  }, []);
-
-  // Función para hacer login
-  const login = async (username, password) => {
-    try {
-      const res = await api.post('token/', { username, password });
-      const data = res.data;
-
-      if (!isTokenValid(data.access)) {
-        throw new Error('Token recibido no válido');
-      }
-
-      setAccessToken(data.access);
-      setUser({ username });
-
-      localStorage.setItem('accessToken', data.access);
-      localStorage.setItem('user', JSON.stringify({ username }));
-
-      setAuthToken(data.access);
-
-      return true;
     } catch (err) {
-      // Axios error: puede tener response.data.detail
-      const detail = err?.response?.data?.detail || err.message;
-      console.error('Login error:', detail);
+      console.error("Login error:", err);
       return false;
     }
   };
 
-  // Función para cerrar sesión
   const logout = () => {
     setAccessToken(null);
     setUser(null);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
-    setAuthToken(null);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
   };
+
+  useEffect(() => {
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+      // Si tenemos token pero no usuario, intentamos obtener los datos del usuario
+      if (!user) {
+        const fetchUserData = async () => {
+          try {
+            const response = await api.get('/usuarios/perfil/');
+            if (response.data) {
+              setUser(response.data);
+              localStorage.setItem("user", JSON.stringify(response.data));
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+        fetchUserData();
+      }
+    }
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [accessToken, user]);
 
   return (
     <AuthContext.Provider value={{ accessToken, user, login, logout }}>

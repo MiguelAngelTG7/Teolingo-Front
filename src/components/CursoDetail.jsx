@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCursoDetail } from '../api/api';
+import { getCursoDetail } from "../api/axiosConfig";
 import '../App.css';
 
 export default function CursoDetail() {
@@ -126,9 +126,13 @@ export default function CursoDetail() {
                 marginBottom: 12
               }}
               onClick={() => {
+                // Encontrar el número de la lección basado en su posición en el array
+                const idx = curso.lecciones.findIndex(l => l.id === leccionSeleccionada.id);
+                const leccionNumero = idx + 1; // Número de lección (1-based)
+                
                 const link = document.createElement('a');
-                link.href = `/assets/leccion_${leccionSeleccionada.id}.pdf`;
-                link.download = `leccion_${leccionSeleccionada.id}.pdf`;
+                link.href = `/assets/leccion_${leccionNumero}.pdf`;
+                link.download = `leccion_${leccionNumero}.pdf`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -270,7 +274,7 @@ export default function CursoDetail() {
         {/* Listado de lecciones */}
         <div className="row justify-content-center">
           {curso.lecciones && [...curso.lecciones]
-            // .sort((a, b) => a.id - b.id)
+            .sort((a, b) => a.id - b.id)
             .map((leccion, idx) => {
               // Buscar progreso de la lección
               let completada = false;
@@ -346,8 +350,7 @@ export default function CursoDetail() {
               );
             })}
           {/* Card de acceso al examen final */}
-          {curso.lecciones && progreso && progreso.lecciones && curso.lecciones.length > 0 && 
-           progreso.lecciones.filter(l => l.completado).length === curso.lecciones.length && (
+          {curso.lecciones && curso.lecciones.length > 0 && (
             <div className="col-12 mb-3">
               <div
                 className="lesson-card text-white"

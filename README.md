@@ -1,12 +1,70 @@
-# React + Vite
+# Teolingo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Requisitos
+- Python 3.10+
+- PostgreSQL
+- Node.js (para el frontend)
 
-Currently, two official plugins are available:
+## Instalación
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Backend
 
-## Expanding the ESLint configuration
+1. Crear y activar entorno virtual:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project...
+2. Instalar dependencias:
+```bash
+pip install -r requirements.txt
+```
+
+3. Configurar variables de entorno:
+Crear archivo `.env` en la carpeta backend con:
+```env
+DEBUG=True
+SECRET_KEY=your-secret-key
+DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/teolingo_dev
+```
+
+4. Aplicar migraciones:
+```bash
+python manage.py migrate
+```
+
+5. Crear superusuario:
+```bash
+python manage.py createsuperuser
+```
+
+6. Iniciar servidor:
+```bash
+python manage.py runserver
+```
+
+### Frontend
+
+1. Instalar dependencias:
+```bash
+cd frontend
+npm install
+```
+
+2. Configurar variables de entorno:
+Crear archivo `.env` en la carpeta frontend con:
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
+```
+
+3. Iniciar servidor de desarrollo:
+```bash
+npm run dev
+```
+
+## Desarrollo
+
+- Backend: http://localhost:8000
+- Frontend: http://localhost:5173
+- Admin: http://localhost:8000/admin

@@ -1,66 +1,66 @@
 // src/App.jsx
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { Routes, Route } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';  // Agregamos este import
+import PrivateRoute from './routes/PrivateRoute';
 import Login from './components/Login';
+import Register from './components/Register';
+import ResetPassword from './components/auth/ResetPassword';
+import VerificarEmail from './components/auth/VerificarEmail';
+import SolicitarResetPassword from './components/auth/SolicitarResetPassword';
 import CursosList from './components/CursosList';
-import CursoDetail from './components/CursoDetail'; 
+import CursoDetail from './components/CursoDetail';
+import CursoProgreso from './components/CursoProgreso';  // Agregamos este import
 import LeccionDetail from './components/LeccionDetail';
-import CursoProgreso from './components/CursoProgreso';
 import ExamenFinal from './components/ExamenFinal';
-import ExamenFinalQuiz from './components/ExamenFinalQuiz'; // Asegúrate de importar el componente
+import ExamenFinalQuiz from './components/ExamenFinalQuiz';
 
 function App() {
-  const { accessToken } = useAuth();
+  const { accessToken } = useAuth();  // Podemos usar useAuth aquí si lo necesitamos
 
   return (
     <Routes>
-      {/* Redirección inteligente desde "/" */}
-      <Route
-        path="/"
-        element={<Navigate to={accessToken ? "/cursos" : "/login"} replace />}
-      />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/verificar-email/:token" element={<VerificarEmail />} />
+      <Route path="/solicitar-reset-password" element={<SolicitarResetPassword />} />
 
-      {/* Ruta de login */}
-      <Route
-        path="/login"
-        element={accessToken ? <Navigate to="/cursos" /> : <Login />}
-      />
-
-      {/* Lista de cursos protegida */}
-      <Route
-        path="/cursos"
-        element={accessToken ? <CursosList /> : <Navigate to="/login" />}
-      />
-
-      {/* Detalle de curso con parámetro :id */}
-      <Route
-        path="/cursos/:id"
-        element={accessToken ? <CursoDetail /> : <Navigate to="/login" />}
-      />
-      
-      <Route
-        path="/lecciones/:id"
-        element={accessToken ? <LeccionDetail /> : <Navigate to="/login" />}
-      />
-
-
-      <Route
-        path="/examen-final/:id"
-        element={accessToken ? <ExamenFinal /> : <Navigate to="/login" />}
-      />
-
-      <Route
-        path="/examen-final/:id/quiz"
-        element={accessToken ? <ExamenFinalQuiz /> : <Navigate to="/login" />}
-      />
-
-      <Route
-        path="/cursos/:id/progreso"
-        element={accessToken ? <CursoProgreso /> : <Navigate to="/login" />}
-      />
-
-      {/* Ruta no encontrada */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Rutas protegidas */}
+      <Route path="/" element={
+        <PrivateRoute>
+          <CursosList />
+        </PrivateRoute>
+      } />
+      <Route path="/cursos" element={
+        <PrivateRoute>
+          <CursosList />
+        </PrivateRoute>
+      } />
+      <Route path="/cursos/:id" element={
+        <PrivateRoute>
+          <CursoDetail />
+        </PrivateRoute>
+      } />
+      <Route path="/cursos/:id/progreso" element={
+        <PrivateRoute>
+          <CursoProgreso />
+        </PrivateRoute>
+      } />
+      <Route path="/lecciones/:id" element={
+        <PrivateRoute>
+          <LeccionDetail />
+        </PrivateRoute>
+      } />
+      <Route path="/examen-final/:id" element={
+        <PrivateRoute>
+          <ExamenFinal />
+        </PrivateRoute>
+      } />
+      <Route path="/examen-final/:id/quiz" element={
+        <PrivateRoute>
+          <ExamenFinalQuiz />
+        </PrivateRoute>
+      } />
     </Routes>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getCursos } from '../api/api';
+import { getCursos, inscribirseEnCurso } from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import '../App.css';
 
@@ -51,8 +51,29 @@ export default function CursosList() {
     navigate('/login');
   };
 
+  const handleInscripcion = async (e, cursoId) => {
+    e.stopPropagation(); // Evitar que el click se propague al div del curso
+    try {
+      await inscribirseEnCurso(cursoId);
+      // Actualizar la lista de cursos para reflejar el cambio
+      const response = await getCursos();
+      setCursos(response.data);
+    } catch (error) {
+      console.error('Error al inscribirse:', error);
+      setError(error.response?.data?.message || 'Error al inscribirse en el curso');
+    }
+  };
+
   if (loading) return <p className="text-secondary">Cargando cursos...</p>;
   if (error) return <p className="text-danger">{error}</p>;
+
+  console.log('Estado de autenticación:', {
+    accessToken,
+    user,
+    cursosData: cursos,
+    loadingState: loading,
+    errorState: error
+  });
 
   return (
     <div className="min-vh-100" style={{ background: '#111' }}>
@@ -60,7 +81,7 @@ export default function CursosList() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 className="mb-1" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-              Bienvenido{user?.username ? `, ${user.username}` : ''}
+              Bienvenido{user?.nombre_completo ? `, ${user.nombre_completo}` : ''}
             </h2>
             <p style={{ color: '#e0e0e0', fontWeight: 500 }}>Explora nuestros cursos disponibles para ti:</p>
           </div>
@@ -79,7 +100,7 @@ export default function CursosList() {
             <div key={curso.id} className="col-12 col-md-6">
               <div
                 className="shadow-sm rounded-4 h-100 position-relative"
-                style={{ background: '#181818', border: '2px solid #fff', boxShadow: '0 4px 18px #0008', cursor: 'pointer', overflow: 'hidden', transition: 'box-shadow 0.2s, transform 0.2s' }}
+                style={{ background: '#181818', border: '2px solid #fff', boxShadow: '0 4px 18px #0008', overflow: 'hidden', transition: 'box-shadow 0.2s, transform 0.2s' }}
                 onClick={() => navigate(`/cursos/${curso.id}`)}
                 title="Ir al curso"
                 onMouseOver={e => { e.currentTarget.style.boxShadow = '0 12px 36px #1cb0f633'; e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'; }}
@@ -119,13 +140,44 @@ export default function CursosList() {
                   </div>
                 </div>
                 {/* Título y categoría debajo */}
-                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 100 }}>
-                  <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
-                  <div className="mb-2" style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
+                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 100, padding: '10px 10px 10px' }}>
+                  <h3 className="fw-bold mb-2" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
+                  <div className="mb-3" style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
                     {curso.categoria?.nombre && (
                       <span>{curso.categoria.nombre}</span>
                     )}
                   </div>
+                  {!curso.esta_inscrito ? (
+                    <button
+                      onClick={(e) => handleInscripcion(e, curso.id)}
+                      className="btn"
+                      style={{
+                        background: '#1cb0f6',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '10px',
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        fontWeight: '700',
+                        letterSpacing: '0.5px',
+                        textTransform: 'uppercase'
+                      }}
+                    >
+                      Inscribirse
+                    </button>
+                  ) : (
+                    <span style={{ 
+                      color: '#1cb0f6', 
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <i className="bi bi-check-circle-fill"></i>
+                      Inscrito
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

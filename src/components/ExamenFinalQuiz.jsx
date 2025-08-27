@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getExamenFinal } from '../api/api';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getExamenFinal } from "../api/axiosConfig";
 import { jsPDF } from "jspdf";
+import logoImage from '../assets/teolingo-logo.png'; // Asegúrate de que la ruta sea correcta
 
 export default function ExamenFinalQuiz() {
   const { id } = useParams(); // id del curso
@@ -19,6 +20,12 @@ export default function ExamenFinalQuiz() {
   useEffect(() => {
     getExamenFinal(id)
       .then(res => {
+        console.log('Examen completo:', res.data);
+        console.log('Preguntas del examen:', res.data.preguntas);
+        if (res.data.preguntas && res.data.preguntas.length > 0) {
+          console.log('Primera pregunta:', res.data.preguntas[0]);
+          console.log('Respuesta correcta de primera pregunta:', res.data.preguntas[0].respuesta_correcta);
+        }
         setExamen(res.data);
         setLoading(false);
       })
@@ -39,6 +46,11 @@ export default function ExamenFinalQuiz() {
   };
 
   const handleRevisar = () => {
+    console.log('Revisando respuesta:', {
+      preguntaId: preguntaActual.id,
+      opcionSeleccionada: opcionSeleccionada,
+      respuestaCorrecta: preguntaActual.respuesta_correcta
+    });
     setRespuestas(prev => ({
       ...prev,
       [preguntaActual.id]: opcionSeleccionada
@@ -70,50 +82,89 @@ export default function ExamenFinalQuiz() {
   const total = examen.preguntas.length;
   const porcentaje = Math.round((correctas / total) * 100);
 
+  console.log('Pregunta actual (estructura completa):', JSON.stringify(preguntaActual, null, 2));
+  console.log('Respuesta correcta:', preguntaActual?.respuesta_correcta);
+  console.log('Respuesta seleccionada:', respuestas[preguntaActual?.id]);
+
   const generarCertificado = () => {
-  // Obtener usuario
-    const user = JSON.parse(localStorage.getItem('user'));
-  // Landscape
-  const doc = new jsPDF({ orientation: 'landscape' });
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
+    if (!user) {
+      console.error('No se encontró información del usuario');
+      return;
+    }
+    
+    // Crear el documento PDF en modo paisaje
+    const doc = new jsPDF({ orientation: 'landscape' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-  // Fondo gris claro (plizo)
-  doc.setFillColor(240, 240, 240); // Gris claro
-  doc.rect(0, 0, pageWidth, pageHeight, 'F');
+    // Fondo gris claro
+    doc.setFillColor(240, 240, 240);
+    doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-  // Marco doble
-  // Primer marco (externo)
-  doc.setDrawColor(80, 80, 80); // Gris oscuro
-  doc.setLineWidth(2);
-  doc.rect(12, 12, pageWidth - 24, pageHeight - 24);
-  // Segundo marco (interno)
-  doc.setDrawColor(160, 160, 160); // Gris medio
-  doc.setLineWidth(0.8);
-  doc.rect(22, 22, pageWidth - 44, pageHeight - 44);
+    // Marco doble
+    doc.setDrawColor(80, 80, 80);
+    doc.setLineWidth(2);
+    doc.rect(12, 12, pageWidth - 24, pageHeight - 24);
+    doc.setDrawColor(160, 160, 160);
+    doc.setLineWidth(0.8);
+    doc.rect(22, 22, pageWidth - 44, pageHeight - 44);
 
-  // Definir líneas de contenido y espaciados personalizados
-  // Espaciado menor entre 2-3 y 4-5
-  const lines = [
-    { text: "Certificado", font: ['helvetica', 'bold'], size: 40, spacing: -18 },
-    { text: "OTORGADO A:", font: ['helvetica', 'normal'], size: 18, spacing: -6 }, // Sin espacio extra
-    { text: `${(user?.username || "ALUMNO").toUpperCase()}`, font: ['helvetica', 'bolditalic'], size: 18, spacing: 10 }, // Espacio mayor después
-    { text: "Por haber completado satisfactoriamente el curso:", font: ['helvetica', 'normal'], size: 16, spacing: -3 }, // Sin espacio extra
-    { text: `${(examen.curso_titulo || "CURSO").toUpperCase()}`, font: ['helvetica', 'bold'], size: 16, spacing: 10 }, // Espacio mayor después
-    { text: `Fecha: ${new Date().toLocaleDateString()}`, font: ['helvetica', 'normal'], size: 14, spacing: 8 },
-    { text: "¡Felicitaciones por tu logro!", font: ['helvetica', 'normal'], size: 14, spacing: 0 }
-  ];
+    // Agregar el logo
+    const img = new Image();
+    img.src = logoImage;
+    img.onload = function() {
+      // Calcular dimensiones para mantener la proporción
+      const maxWidth = 50;  // ancho máximo del logo en el PDF
+      const aspectRatio = img.height / img.width;
+      const logoWidth = maxWidth;
+      const logoHeight = logoWidth * aspectRatio;
 
-  // Calcular altura total del bloque de texto
-  let totalHeight = 0;
-  lines.forEach(line => {
-    totalHeight += line.size + line.spacing;
-  });
+      // Posicionar el logo en la esquina superior derecha con un margen
+      doc.addImage(img, 'PNG', pageWidth - 30 - logoWidth, 30, logoWidth, logoHeight);
 
-  // Calcular posición inicial para que 'CERTIFICADO' esté más arriba
-  let startY = (pageHeight - totalHeight) / 2 + lines[0].size / 2 - 10;
+      // Continuar con el resto del certificado
+      renderCertificateContent();
+    };
 
-  // Dibujar cada línea centrada
+    // Función para renderizar el contenido del certificado
+    const renderCertificateContent = () => {
+
+      // Contenido del certificado
+      const lines = [ 
+        { text: "TEOLINGO.edu", font: ['helvetica', 'bold'], size: 40, spacing: -18 },
+        { text: "CERTIFICA QUE:", font: ['helvetica', 'normal'], size: 18, spacing: -6 },
+        { text: `${(user?.nombre_completo || "ALUMNO").toUpperCase()}`, font: ['helvetica', 'bolditalic'], size: 18, spacing: 10 },
+        { text: "Ha completado satisfactoriamente el curso:", font: ['helvetica', 'normal'], size: 16, spacing: -3 },
+        { text: `${(examen.curso_titulo || "CURSO").toUpperCase()}`, font: ['helvetica', 'bold'], size: 16, spacing: 10 },
+        { text: `Fecha: ${new Date().toLocaleDateString()}`, font: ['helvetica', 'normal'], size: 14, spacing: 8 },
+        { text: "¡Felicitaciones por tu logro!", font: ['helvetica', 'normal'], size: 14, spacing: 0 }
+      ];
+
+      // Calcular y centrar el contenido
+      let totalHeight = 0;
+      lines.forEach(line => {
+        totalHeight += line.size + line.spacing;
+      });
+
+      let startY = (pageHeight - totalHeight) / 2 + lines[0].size / 2 - 10;
+      let posY = startY;
+
+      // Dibujar cada línea del contenido principal
+      lines.forEach(line => {
+        doc.setFont(line.font[0], line.font[1]);
+        doc.setFontSize(line.size);
+        doc.text(line.text, pageWidth / 2, posY, { align: 'center' });
+        posY += line.size + line.spacing;
+      });
+
+      // Agregar "DIRECCIÓN ACADEMICA" en la esquina inferior derecha
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.text('DIRECCIÓN ACADEMICA', pageWidth - 30, pageHeight - 30, { align: 'right' });
+
+      // Guardar el PDF
+      doc.save("certificado.pdf");
+    };
   let currentY = startY;
   lines.forEach(line => {
     doc.setFont(line.font[0], line.font[1]);
@@ -129,7 +180,11 @@ export default function ExamenFinalQuiz() {
     <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center" 
          style={{ background: '#111', minHeight: '100vh', padding: '32px 0', position: 'relative' }}>
       <div className="container" style={{ maxWidth: 700, background: '#111', borderRadius: 18, padding: '32px 24px', boxShadow: '0 2px 16px #0006', position: 'relative' }}>
-        <h1 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 33, letterSpacing: 0.5, textTransform: 'uppercase' }}>{examen.curso.titulo}</h1>
+        {examen.curso_titulo && (
+          <h1 className="mb-4 text-center" style={{ color: '#fff', fontWeight: 900, fontSize: 33, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+            {examen.curso_titulo}
+          </h1>
+        )}
         <h2 className="mb-3 text-center" style={{ color: '#1cb0f6', fontWeight: 800, fontSize: 28, letterSpacing: 0.5 }}>Evaluación Final</h2>
         {terminado ? (
           <div className="text-center">
@@ -201,7 +256,7 @@ export default function ExamenFinalQuiz() {
                 }}
                 onClick={() => navigate('/')}
               >
-                ← Inicio
+                Inicio
               </button>
             </div>
           </div>
@@ -293,9 +348,11 @@ export default function ExamenFinalQuiz() {
                   className={`mt-3 fw-bold text-center`}
                   style={{ fontSize: '2rem', color: respuestas[preguntaActual.id] === preguntaActual.respuesta_correcta ? '#58cc02' : '#fa5252' }}
                 >
+                  {console.log('Respuesta del usuario:', respuestas[preguntaActual.id])}
+                  {console.log('Respuesta correcta actual:', preguntaActual.respuesta_correcta)}
                   {respuestas[preguntaActual.id] === preguntaActual.respuesta_correcta
                     ? '¡Correcto :)!'
-                    : `Incorrecto :( Respuesta correcta: ${preguntaActual.respuesta_correcta}`}
+                    : `Incorrecto :( Respuesta correcta: ${preguntaActual.respuesta_correcta || 'No disponible'}`}
                 </p>
                 <button
                   onClick={siguiente}
