@@ -350,7 +350,8 @@ export default function CursoDetail() {
               );
             })}
           {/* Card de acceso al examen final */}
-          {curso.lecciones && curso.lecciones.length > 0 && (
+          {curso.lecciones && progreso && progreso.lecciones && curso.lecciones.length > 0 && 
+           progreso.lecciones.filter(l => l.completado).length === curso.lecciones.length && (
             <div className="col-12 mb-3">
               <div
                 className="lesson-card text-white"
