@@ -77,7 +77,7 @@ export default function CursoDetail() {
         }}
         onClick={() => setLeccionSeleccionada(null)}
       >
-        ← Lecciones
+        Lecciones
       </button>
           {/* Indicador de número de lección */}
           {curso.lecciones && (
@@ -190,7 +190,7 @@ export default function CursoDetail() {
         }}
         onClick={() => navigate('/')}
       >
-        ← Inicio
+        Inicio
       </button>
       
       <div className="min-vh-100" style={{ background: '#111', position: 'relative', paddingTop: '24px' }}>
