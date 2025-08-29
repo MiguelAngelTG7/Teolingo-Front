@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../api/axiosConfig';
+import { register } from '../api/auth';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -40,7 +40,7 @@ export default function Register() {
             setTimeout(() => {
                 navigate('/login', { 
                     state: { 
-                        message: 'Por favor verifica tu correo electrónico antes de iniciar sesión' 
+                        message: '¡Registro exitoso! Por favor inicia sesión' 
                     }
                 });
             }, 3000);
