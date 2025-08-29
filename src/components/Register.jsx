@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { register } from '../api/axiosConfig';  // Import the register function directly
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -17,8 +17,14 @@ export default function Register() {
     e.preventDefault();
     setError('');
     
+    // Validate passwords match
+    if (formData.password !== formData.confirm_password) {
+        setError('Las contraseñas no coinciden');
+        return;
+    }
+
     try {
-        const result = await register(
+        await register(
             formData.email,
             formData.password,
             formData.nombre_completo
@@ -28,10 +34,10 @@ export default function Register() {
     } catch (error) {
         console.error('Registration error:', error);
         if (error.response?.data) {
-            setError(typeof error.response.data === 'string' 
+            const errorMessage = typeof error.response.data === 'string' 
                 ? error.response.data 
-                : Object.values(error.response.data).flat().join('\n')
-            );
+                : Object.values(error.response.data).flat().join('\n');
+            setError(errorMessage);
         } else {
             setError('Error al conectar con el servidor. Por favor intenta más tarde.');
         }

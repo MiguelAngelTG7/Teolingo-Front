@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-// Add console log to debug the base URL
-console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL);
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+console.log('API Base URL:', baseURL); // For debugging
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://teolingo-back-production.up.railway.app/api',
+    baseURL: baseURL,
     headers: {
         'Content-Type': 'application/json',
     },
