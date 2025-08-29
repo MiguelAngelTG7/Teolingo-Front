@@ -48,18 +48,26 @@ export default function Register() {
       console.error("❌ Error completo:", err);
       if (err.response) {
         console.log("📩 Detalle del error desde Django:", err.response.data);
-        // mostramos el JSON de error en pantalla para debug
-        setError(
-          typeof err.response.data === "object"
-            ? JSON.stringify(err.response.data, null, 2)
-            : err.response.data
-        );
+        if (err.response.status === 201) {
+          // Si el usuario se creó pero hubo un problema con el correo
+          setSuccess("¡Registro exitoso! Por favor contacta al soporte para verificar tu cuenta.");
+          setTimeout(() => {
+            navigate('/login');
+          }, 5000);
+        } else {
+          // Otros errores del servidor
+          setError(
+            typeof err.response.data === "object"
+              ? JSON.stringify(err.response.data, null, 2)
+              : err.response.data
+          );
+        }
       } else if (err.request) {
         console.log("📡 No hubo respuesta del servidor:", err.request);
-        setError("No hubo respuesta del servidor. Revisa la consola.");
+        setError("Error de conexión. Por favor intenta más tarde.");
       } else {
         console.log("⚠️ Error al configurar la petición:", err.message);
-        setError(err.message);
+        setError("Error al procesar la solicitud. Por favor intenta más tarde.");
       }
     }
   };
