@@ -9,16 +9,19 @@ export const register = async (email, password, nombre_completo) => {
   return response.data;
 };
 
-export const login = async (username, password) => {
+export const login = async (email, password) => {
   const response = await api.post('/usuarios/login/', {
-    username,
+    email,
     password
   });
   if (response.data.access) {
     localStorage.setItem('accessToken', response.data.access);
-    return true;
+    if (response.data.user) {
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
   }
-  return false;
+  throw new Error('Credenciales inválidas');
 };
 
 export const logout = () => {
