@@ -1,35 +1,38 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../../api/axiosConfig';
+import axios from 'axios';
 
 const VerificarEmail = () => {
-  const [status, setStatus] = useState('verificando');
-  const [error, setError] = useState('');
   const { token } = useParams();
   const navigate = useNavigate();
+  const [status, setStatus] = useState('verificando');
 
   useEffect(() => {
     const verificarEmail = async () => {
-      if (!token) {
-        setStatus('error');
-        setError('Token no proporcionado');
-        return;
-      }
-
       try {
-        await api.post('/usuarios/verificar-email/', { token });  // Cambiado a POST
-        setStatus('success');
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/usuarios/verificar-email/`,
+          { token },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+        );
+        
+        if (response.status === 200) {
+          setStatus('success');
+          setTimeout(() => navigate('/login'), 3000);
+        }
       } catch (error) {
+        console.error('Error:', error);
         setStatus('error');
-        setError(error.response?.data?.message || 'Error al verificar el email');
-        console.error('Error al verificar email:', error);
       }
     };
 
-    verificarEmail();
+    if (token) {
+      verificarEmail();
+    }
   }, [token, navigate]);
 
   return (
@@ -54,7 +57,7 @@ const VerificarEmail = () => {
         {status === 'error' && (
           <div style={{ color: '#fa5252', fontWeight: 700, fontSize: 20, marginBottom: 12 }}>
             <p>Error al verificar el email</p>
-            <p style={{ color: '#e0e0e0', fontSize: 16 }}>{error}</p>
+            <p style={{ color: '#e0e0e0', fontSize: 16 }}>Ocurrió un error inesperado. Por favor, intenta nuevamente más tarde.</p>
             <button
               onClick={() => navigate('/login')}
               style={{ 

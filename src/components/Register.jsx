@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../api/axiosConfig';  // Updated import path
+import axios from 'axios';
 
 export default function Register() {
   const [formData, setFormData] = useState({
     email: '',
     nombre_completo: '',
     password: '',
-    confirmPassword: ''
+    confirm_password: '' // Changed from confirmPassword to match backend
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -19,40 +19,37 @@ export default function Register() {
     setSuccess('');
 
     // Validaciones básicas
-    if (!formData.email || !formData.nombre_completo || !formData.password || !formData.confirmPassword) {
+    if (!formData.email || !formData.nombre_completo || !formData.password || !formData.confirm_password) {
       setError('Todos los campos son obligatorios');
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.confirm_password) {
       setError('Las contraseñas no coinciden');
       return;
     }
 
     try {
-      const response = await register(
-        formData.email,
-        formData.nombre_completo,  // Cambiado el orden para coincidir con el backend
-        formData.password
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/usuarios/registro/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
       );
       
-      setSuccess('¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta.');
-      
-      // Esperar un poco más antes de redirigir
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000);
-    } catch (err) {
-      console.error("❌ Error completo:", err);
-      
-      if (err.response?.data) {
-        // Manejar errores específicos del backend
-        const errorMessage = typeof err.response.data === 'object' 
-          ? Object.values(err.response.data).flat().join('\n')
-          : err.response.data;
-        setError(errorMessage);
+      if (response.status === 201) {
+        setSuccess('Usuario registrado exitosamente. Por favor verifica tu correo electrónico.');
+        setTimeout(() => navigate('/login'), 3000);
+      }
+    } catch (error) {
+      console.error('❌ Error completo:', error);
+      if (error.response?.data) {
+        setError(JSON.stringify(error.response.data));
       } else {
-        setError('Error de conexión. Por favor intenta más tarde.');
+        setError('Error al registrar usuario');
       }
     }
   };
@@ -176,8 +173,8 @@ export default function Register() {
             <input
               type="password"
               className="form-control"
-              value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              value={formData.confirm_password}
+              onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
               required
               style={{
                 background: '#232323',
