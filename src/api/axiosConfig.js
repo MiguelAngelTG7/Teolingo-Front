@@ -2,14 +2,13 @@ import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-console.log('API Base URL:', baseURL); // For debugging
-
 const api = axios.create({
     baseURL: baseURL,
     headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
     },
-    withCredentials: true
+    withCredentials: false  // Changed to false for initial registration
 });
 
 // Interceptor para token
@@ -42,26 +41,34 @@ api.interceptors.request.use(
 // Auth endpoints
 export const register = async (email, password, nombre_completo) => {
     try {
-        console.log('Attempting registration with URL:', `${api.defaults.baseURL}/usuarios/registro/`);
-        console.log('Registration data:', { email, password, nombre_completo });
-        
         const response = await api.post('/usuarios/registro/', { 
             email, 
-            password,
             nombre_completo,
-            confirm_password: password // Add this if your backend expects it
+            password,
+            confirm_password: password
         });
         
-        console.log('Registration response:', response);
-        return response.data;
+        // Check if registration was successful
+        if (response.status === 201) {
+            return {
+                success: true,
+                message: 'Por favor revisa tu correo electrónico para verificar tu cuenta',
+                data: response.data
+            };
+        }
+        
+        throw new Error('Error en el registro');
     } catch (error) {
-        console.error('Registration error:', {
-            message: error.message,
-            response: error.response?.data,
-            status: error.response?.status,
-            url: error.config?.url
-        });
-        throw error;
+        if (error.response) {
+            // The server responded with a status code outside the 2xx range
+            throw new Error(error.response.data.message || 'Error en el registro');
+        } else if (error.request) {
+            // The request was made but no response was received
+            throw new Error('No se pudo conectar con el servidor');
+        } else {
+            // Something happened in setting up the request
+            throw new Error('Error al procesar la solicitud');
+        }
     }
 };
 
