@@ -24,7 +24,13 @@ export default function Register() {
     }
 
     try {
-      await register(formData.email, formData.password, formData.nombre_completo);
+      const response = await register(
+        formData.email,
+        formData.password,
+        formData.nombre_completo
+      );
+      console.log("✅ Registro exitoso:", response.data);
+
       setSuccess(
         '¡Registro exitoso! Por favor, revisa tu correo electrónico y haz clic en el enlace que te enviamos para verificar tu cuenta.'
       );
@@ -32,7 +38,22 @@ export default function Register() {
         navigate('/login');
       }, 5000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al registrarse');
+      console.error("❌ Error completo:", err);
+      if (err.response) {
+        console.log("📩 Detalle del error desde Django:", err.response.data);
+        // mostramos el JSON de error en pantalla para debug
+        setError(
+          typeof err.response.data === "object"
+            ? JSON.stringify(err.response.data, null, 2)
+            : err.response.data
+        );
+      } else if (err.request) {
+        console.log("📡 No hubo respuesta del servidor:", err.request);
+        setError("No hubo respuesta del servidor. Revisa la consola.");
+      } else {
+        console.log("⚠️ Error al configurar la petición:", err.message);
+        setError(err.message);
+      }
     }
   };
 
@@ -56,18 +77,19 @@ export default function Register() {
         </h1>
 
         {error && (
-          <div
+          <pre
             className="alert"
             style={{
               background: '#ff5b5b20',
               color: '#ff5b5b',
               border: '1px solid #ff5b5b',
               borderRadius: '10px',
-              padding: '10px 15px'
+              padding: '10px 15px',
+              whiteSpace: 'pre-wrap'
             }}
           >
             {error}
-          </div>
+          </pre>
         )}
 
         {success && (
@@ -126,7 +148,6 @@ export default function Register() {
             />
           </div>
 
-
           <div className="mb-3">
             <label style={{ color: '#fff', marginBottom: '6px', display: 'block' }}>
               Contraseña
@@ -145,6 +166,7 @@ export default function Register() {
                 padding: '12px'
               }}
             />
+
           </div>
 
           <div className="mb-4">
