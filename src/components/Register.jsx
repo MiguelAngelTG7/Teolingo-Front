@@ -46,7 +46,7 @@ export default function Register() {
             }, 3000);
             
         } catch (error) {
-            setError(error.message);
+            setError(error.response?.data?.error || 'Error al registrar usuario');
             console.error('Registration error:', error);
         } finally {
             setIsLoading(false);
