@@ -38,66 +38,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Auth endpoints
-export const register = async (email, password, nombre_completo) => {
-    try {
-        const response = await api.post('/usuarios/registro/', { 
-            email, 
-            nombre_completo,
-            password,
-            confirm_password: password
-        });
-        
-        // Check if registration was successful
-        if (response.status === 201) {
-            return {
-                success: true,
-                message: 'Por favor revisa tu correo electrónico para verificar tu cuenta',
-                data: response.data
-            };
-        }
-        
-        throw new Error('Error en el registro');
-    } catch (error) {
-        if (error.response) {
-            // The server responded with a status code outside the 2xx range
-            throw new Error(error.response.data.message || 'Error en el registro');
-        } else if (error.request) {
-            // The request was made but no response was received
-            throw new Error('No se pudo conectar con el servidor');
-        } else {
-            // Something happened in setting up the request
-            throw new Error('Error al procesar la solicitud');
-        }
-    }
-};
-
-export const login = async (email, password) => {
-  const response = await api.post('/usuarios/login/', { 
-    email, 
-    password 
-  });
-  
-  if (response.data.access) {
-    // Guardamos los tokens
-    localStorage.setItem('accessToken', response.data.access);
-    localStorage.setItem('refreshToken', response.data.refresh);
-    
-    // Guardamos los datos del usuario que vienen en la respuesta
-    if (response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
-    
-    return response.data;
-  }
-  throw new Error('No se recibió el token de acceso');
-};
-
-export const logout = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('user');
-};
-
 // API endpoints
 export const getCursos = () => api.get('/cursos/');
 export const getCurso = (id) => api.get(`/cursos/${id}/`);
