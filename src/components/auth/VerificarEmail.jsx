@@ -10,7 +10,7 @@ const VerificarEmail = () => {
   useEffect(() => {
     const verificarEmail = async () => {
       try {
-        const response = await api.post('/usuarios/verificar-email/', { token });
+        const response = await api.get(`/usuarios/verificar-email/?token=${token}`);
         setStatus('success');
         setTimeout(() => {
           navigate('/login');
