@@ -31,6 +31,9 @@ api.interceptors.request.use(
       const token = localStorage.getItem('accessToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        // Si no hay token y no es un endpoint público, rechazar la petición
+        return Promise.reject(new Error('No hay token de autenticación'));
       }
     }
     return config;

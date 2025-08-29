@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getCursos, inscribirseEnCurso } from '../api/axiosConfig';
+import api from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import '../App.css';
 
@@ -19,29 +19,32 @@ export default function CursosList() {
       return;
     }
 
-    getCursos()
+    api.get('/cursos/')
       .then(res => {
         setCursos(res.data);
         setLoading(false);
         // Cargar progreso de cada curso
         res.data.forEach(curso => {
-          const API_URL = import.meta.env.VITE_API_BASE_URL;
-          fetch(`${API_URL}/cursos/${curso.id}/progreso/`, {
-            headers: {
-              'Authorization': `Bearer ${accessToken}`
-            }
-          })
-            .then(r => r.ok ? r.json() : null)
-            .then(data => {
-              if (data) {
-                setProgresos(prev => ({ ...prev, [curso.id]: data }));
+          api.get(`/cursos/${curso.id}/progreso/`)
+            .then(response => {
+              if (response.data) {
+                setProgresos(prev => ({ ...prev, [curso.id]: response.data }));
               }
+            })
+            .catch(error => {
+              console.error('Error al cargar el progreso:', error);
             });
         });
       })
       .catch(err => {
         console.error('Error al cargar los cursos:', err);
-        setError('No se pudieron cargar los cursos.');
+        if (err.response?.status === 401) {
+          setError('La sesión ha expirado. Por favor, inicia sesión nuevamente.');
+          logout();
+          navigate('/login');
+        } else {
+          setError('No se pudieron cargar los cursos. Por favor, intenta de nuevo.');
+        }
         setLoading(false);
       });
   }, [accessToken]);
