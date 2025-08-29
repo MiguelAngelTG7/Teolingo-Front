@@ -16,41 +16,25 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
-
-    // Validaciones básicas
-    if (!formData.email || !formData.nombre_completo || !formData.password || !formData.confirm_password) {
-      setError('Todos los campos son obligatorios');
-      return;
-    }
-
-    if (formData.password !== formData.confirm_password) {
-      setError('Las contraseñas no coinciden');
-      return;
-    }
-
+    
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/usuarios/registro/`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-      
-      if (response.status === 201) {
+        const result = await register(
+            formData.email,
+            formData.password,
+            formData.nombre_completo
+        );
         setSuccess('Usuario registrado exitosamente. Por favor verifica tu correo electrónico.');
         setTimeout(() => navigate('/login'), 3000);
-      }
     } catch (error) {
-      console.error('❌ Error completo:', error);
-      if (error.response?.data) {
-        setError(JSON.stringify(error.response.data));
-      } else {
-        setError('Error al registrar usuario');
-      }
+        console.error('Registration error:', error);
+        if (error.response?.data) {
+            setError(typeof error.response.data === 'string' 
+                ? error.response.data 
+                : Object.values(error.response.data).flat().join('\n')
+            );
+        } else {
+            setError('Error al conectar con el servidor. Por favor intenta más tarde.');
+        }
     }
   };
 

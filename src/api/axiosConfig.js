@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Add console log to debug the base URL
+console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL);
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://teolingo-back-production.up.railway.app/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -37,12 +40,28 @@ api.interceptors.request.use(
 
 // Auth endpoints
 export const register = async (email, password, nombre_completo) => {
-  const response = await api.post('/usuarios/registro/', { 
-    email, 
-    password,
-    nombre_completo 
-  });
-  return response.data;
+    try {
+        console.log('Attempting registration with URL:', `${api.defaults.baseURL}/usuarios/registro/`);
+        console.log('Registration data:', { email, password, nombre_completo });
+        
+        const response = await api.post('/usuarios/registro/', { 
+            email, 
+            password,
+            nombre_completo,
+            confirm_password: password // Add this if your backend expects it
+        });
+        
+        console.log('Registration response:', response);
+        return response.data;
+    } catch (error) {
+        console.error('Registration error:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status,
+            url: error.config?.url
+        });
+        throw error;
+    }
 };
 
 export const login = async (email, password) => {
