@@ -31,9 +31,16 @@ export default function Register() {
       );
       console.log("✅ Registro exitoso:", response.data);
 
-      setSuccess(
-        '¡Registro exitoso! Por favor, revisa tu correo electrónico y haz clic en el enlace que te enviamos para verificar tu cuenta.'
-      );
+      if (response.data.email_sent) {
+        setSuccess(
+          '¡Registro exitoso! Por favor, revisa tu correo electrónico y haz clic en el enlace que te enviamos para verificar tu cuenta.'
+        );
+      } else {
+        setSuccess(
+          '¡Registro exitoso! Hubo un problema al enviar el correo de verificación. Por favor, contacta al soporte.'
+        );
+      }
+      
       setTimeout(() => {
         navigate('/login');
       }, 5000);
