@@ -4,26 +4,32 @@ import api from '../../api/axiosConfig';
 
 const VerificarEmail = () => {
   const [status, setStatus] = useState('verificando');
+  const [error, setError] = useState('');
   const { token } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     const verificarEmail = async () => {
+      if (!token) {
+        setStatus('error');
+        setError('Token no proporcionado');
+        return;
+      }
+
       try {
-        const response = await api.get(`/usuarios/verificar-email/?token=${token}`);
+        await api.post('/usuarios/verificar-email/', { token });  // Cambiado a POST
         setStatus('success');
         setTimeout(() => {
           navigate('/login');
         }, 3000);
       } catch (error) {
         setStatus('error');
+        setError(error.response?.data?.message || 'Error al verificar el email');
         console.error('Error al verificar email:', error);
       }
     };
 
-    if (token) {
-      verificarEmail();
-    }
+    verificarEmail();
   }, [token, navigate]);
 
   return (
@@ -32,22 +38,37 @@ const VerificarEmail = () => {
         {status === 'verificando' && (
           <div style={{ color: '#1cb0f6', fontWeight: 700, fontSize: 20, marginBottom: 12 }}>
             <p>Verificando tu correo electrónico...</p>
-            {/* Puedes agregar un spinner aquí si lo deseas */}
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
           </div>
         )}
         {status === 'success' && (
           <div style={{ color: '#58cc02', fontWeight: 700, fontSize: 20, marginBottom: 12 }}>
             <p>¡Email verificado correctamente!</p>
-            <p style={{ color: '#e0e0e0', fontSize: 16 }}>Serás redirigido al inicio de sesión en unos momentos...</p>
+            <p style={{ color: '#e0e0e0', fontSize: 16 }}>
+              Redirigiendo al inicio de sesión...
+            </p>
           </div>
         )}
         {status === 'error' && (
           <div style={{ color: '#fa5252', fontWeight: 700, fontSize: 20, marginBottom: 12 }}>
             <p>Error al verificar el email</p>
-            <p style={{ color: '#e0e0e0', fontSize: 16 }}>El enlace podría haber expirado o ser inválido.</p>
+            <p style={{ color: '#e0e0e0', fontSize: 16 }}>{error}</p>
             <button
               onClick={() => navigate('/login')}
-              style={{ width: '100%', padding: '12px 0', borderRadius: 10, background: '#1cb0f6', color: '#fff', fontWeight: 900, fontSize: 18, letterSpacing: 0.5, textTransform: 'uppercase', border: 'none', marginTop: 8, boxShadow: '0 2px 12px #0005' }}
+              style={{ 
+                width: '100%', 
+                padding: '12px 0', 
+                borderRadius: 10, 
+                background: '#1cb0f6', 
+                color: '#fff', 
+                fontWeight: 900, 
+                fontSize: 18, 
+                border: 'none', 
+                marginTop: 16,
+                cursor: 'pointer'
+              }}
             >
               Ir al inicio de sesión
             </button>

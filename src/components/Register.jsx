@@ -18,6 +18,12 @@ export default function Register() {
     setError('');
     setSuccess('');
 
+    // Validaciones básicas
+    if (!formData.email || !formData.nombre_completo || !formData.password || !formData.confirmPassword) {
+      setError('Todos los campos son obligatorios');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
@@ -26,48 +32,27 @@ export default function Register() {
     try {
       const response = await register(
         formData.email,
-        formData.password,
-        formData.nombre_completo
+        formData.nombre_completo,  // Cambiado el orden para coincidir con el backend
+        formData.password
       );
-      console.log("✅ Registro exitoso:", response.data);
-
-      if (response.data.email_sent) {
-        setSuccess(
-          '¡Registro exitoso! Por favor, revisa tu correo electrónico y haz clic en el enlace que te enviamos para verificar tu cuenta.'
-        );
-      } else {
-        setSuccess(
-          '¡Registro exitoso! Hubo un problema al enviar el correo de verificación. Por favor, contacta al soporte.'
-        );
-      }
       
+      setSuccess('¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta.');
+      
+      // Esperar un poco más antes de redirigir
       setTimeout(() => {
         navigate('/login');
-      }, 5000);
+      }, 3000);
     } catch (err) {
       console.error("❌ Error completo:", err);
-      if (err.response) {
-        console.log("📩 Detalle del error desde Django:", err.response.data);
-        if (err.response.status === 201) {
-          // Si el usuario se creó pero hubo un problema con el correo
-          setSuccess("¡Registro exitoso! Por favor contacta al soporte para verificar tu cuenta.");
-          setTimeout(() => {
-            navigate('/login');
-          }, 5000);
-        } else {
-          // Otros errores del servidor
-          setError(
-            typeof err.response.data === "object"
-              ? JSON.stringify(err.response.data, null, 2)
-              : err.response.data
-          );
-        }
-      } else if (err.request) {
-        console.log("📡 No hubo respuesta del servidor:", err.request);
-        setError("Error de conexión. Por favor intenta más tarde.");
+      
+      if (err.response?.data) {
+        // Manejar errores específicos del backend
+        const errorMessage = typeof err.response.data === 'object' 
+          ? Object.values(err.response.data).flat().join('\n')
+          : err.response.data;
+        setError(errorMessage);
       } else {
-        console.log("⚠️ Error al configurar la petición:", err.message);
-        setError("Error al procesar la solicitud. Por favor intenta más tarde.");
+        setError('Error de conexión. Por favor intenta más tarde.');
       }
     }
   };
