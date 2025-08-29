@@ -110,20 +110,6 @@ export default function Login() {
         </form>
 
         <div className="text-center mt-4">
-          <div className="mb-3">
-            <Link 
-              to="/solicitar-reset-password"
-              style={{ 
-                color: '#1cb0f6',
-                textDecoration: 'none',
-                fontSize: '14px',
-                letterSpacing: '0.5px',
-                fontWeight: '600'
-              }}
-            >
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
           <Link 
             to="/register" 
             style={{ 

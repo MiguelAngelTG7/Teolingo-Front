@@ -4,9 +4,6 @@ import { useAuth } from './context/AuthContext';  // Agregamos este import
 import PrivateRoute from './routes/PrivateRoute';
 import Login from './components/Login';
 import Register from './components/Register';
-import ResetPassword from './components/auth/ResetPassword';
-import VerificarEmail from './components/auth/VerificarEmail';
-import SolicitarResetPassword from './components/auth/SolicitarResetPassword';
 import CursosList from './components/CursosList';
 import CursoDetail from './components/CursoDetail';
 import CursoProgreso from './components/CursoProgreso';  // Agregamos este import
@@ -21,9 +18,6 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/verificar-email/:token" element={<VerificarEmail />} />
-      <Route path="/solicitar-reset-password" element={<SolicitarResetPassword />} />
 
       {/* Rutas protegidas */}
       <Route path="/" element={

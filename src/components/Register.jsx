@@ -34,11 +34,9 @@ export default function Register() {
                 formData.nombre_completo
             );
             
-            setSuccess(
-                'Registro exitoso! Por favor revisa tu correo electrónico para verificar tu cuenta.'
-            );
+            setSuccess('¡Registro exitoso!');
             
-            // Show success message for 3 seconds before redirecting
+            // Redirect to login immediately
             setTimeout(() => {
                 navigate('/login', { 
                     state: { 
