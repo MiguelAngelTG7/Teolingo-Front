@@ -58,7 +58,7 @@ export default function CursosList() {
     e.stopPropagation(); // Evitar que el click se propague al div del curso
     try {
       // Hacer la petición de inscripción
-      await api.post(`/cursos/${cursoId}/inscribir/`);
+      await api.post(`/cursos/${cursoId}/inscripciones/`);
       
       // Actualizar la lista de cursos para reflejar el cambio
       const response = await api.get('/cursos/');
@@ -68,7 +68,11 @@ export default function CursosList() {
       setError(null);
     } catch (error) {
       console.error('Error al inscribirse:', error);
-      setError(error.response?.data?.message || 'Error al inscribirse en el curso');
+      if (error.response?.status === 404) {
+        setError('Lo sentimos, no se pudo encontrar el curso para la inscripción');
+      } else {
+        setError(error.response?.data?.message || 'Error al inscribirse en el curso. Por favor, intenta de nuevo.');
+      }
     }
   };
 
