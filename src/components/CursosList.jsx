@@ -58,7 +58,7 @@ export default function CursosList() {
     e.stopPropagation(); // Evitar que el click se propague al div del curso
     try {
       // Hacer la petición de inscripción
-      await api.post(`/cursos/${cursoId}/inscripciones/`);
+      await api.post(`/cursos/${cursoId}/`);
       
       // Actualizar la lista de cursos para reflejar el cambio
       const response = await api.get('/cursos/');
