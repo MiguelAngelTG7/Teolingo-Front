@@ -232,7 +232,7 @@ export default function CursosList() {
                 {/* Título y categoría debajo */}
                 <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 80, padding: '16px 10px' }}>
                   <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
-                  <div style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
+                  <div style={{ fontSize: '0.9rem', color: '#e0e0e0', fontWeight: 500, textShadow: '0 1px 4px #0007', opacity: 0.9 }}>
                     {curso.categoria?.nombre && (
                       <span>{curso.categoria.nombre}</span>
                     )}
