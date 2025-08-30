@@ -75,10 +75,17 @@ export default function CursosList() {
     } catch (error) {
       console.error('Error al inscribirse:', error);
       if (error.response?.status === 404) {
-        setError('Lo sentimos, no se pudo encontrar el curso para la inscripción');
+        setError('¡Ups! Parece que hubo un pequeño problema al encontrar el curso. Por favor, actualiza la página e intenta de nuevo.');
+      } else if (error.response?.status === 400 && error.response?.data?.message?.includes('Ya estás inscrito')) {
+        setError('¡Ya formas parte de este curso! Puedes acceder al contenido directamente.');
       } else {
-        setError(error.response?.data?.message || 'Error al inscribirse en el curso. Por favor, intenta de nuevo.');
+        setError(error.response?.data?.message || '¡Ups! Algo no salió como esperábamos. ¿Podrías intentarlo de nuevo?');
       }
+      
+      // Limpiar el mensaje de error después de 5 segundos
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
@@ -98,34 +105,82 @@ export default function CursosList() {
       <div className="container py-4" style={{ maxWidth: 900 }}>
         {error && (
           <div 
-            className="alert fade show mb-4 d-flex align-items-center justify-content-between" 
+            className="alert fade show mb-4" 
             role="alert" 
             style={{ 
-              background: 'rgba(28, 176, 246, 0.1)',
+              background: error.includes('exitosamente') ? 'rgba(23, 201, 100, 0.1)' : 'rgba(28, 176, 246, 0.1)',
               backdropFilter: 'blur(8px)',
-              border: '1px solid #1cb0f6',
-              borderRadius: '12px',
+              border: error.includes('exitosamente') ? '1px solid #17c964' : '1px solid #1cb0f6',
+              borderRadius: '16px',
               color: '#fff',
-              padding: '16px 20px',
-              boxShadow: '0 4px 12px rgba(28, 176, 246, 0.15)'
+              padding: '20px',
+              boxShadow: error.includes('exitosamente') 
+                ? '0 8px 16px rgba(23, 201, 100, 0.15)' 
+                : '0 8px 16px rgba(28, 176, 246, 0.15)',
+              animation: 'fadeInDown 0.3s ease-out'
             }}
           >
-            <div className="d-flex align-items-center gap-3">
-              <i className="bi bi-info-circle-fill" style={{ color: '#1cb0f6', fontSize: '1.5rem' }}></i>
-              <span style={{ fontWeight: 600, letterSpacing: '0.3px' }}>{error}</span>
+            <div className="d-flex align-items-center gap-4">
+              {error.includes('exitosamente') ? (
+                <div className="d-flex align-items-center justify-content-center" 
+                  style={{ 
+                    background: 'rgba(23, 201, 100, 0.2)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    width: '48px',
+                    height: '48px'
+                  }}>
+                  <i className="bi bi-check-circle-fill" style={{ color: '#17c964', fontSize: '1.8rem' }}></i>
+                </div>
+              ) : (
+                <div className="d-flex align-items-center justify-content-center" 
+                  style={{ 
+                    background: 'rgba(28, 176, 246, 0.2)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    width: '48px',
+                    height: '48px'
+                  }}>
+                  <i className="bi bi-info-circle-fill" style={{ color: '#1cb0f6', fontSize: '1.8rem' }}></i>
+                </div>
+              )}
+              <div className="flex-grow-1">
+                <div style={{ 
+                  fontWeight: '700', 
+                  fontSize: '1.1rem', 
+                  marginBottom: '4px',
+                  letterSpacing: '0.3px'
+                }}>
+                  {error.includes('exitosamente') ? '¡Felicitaciones!' : '¡Atención!'}
+                </div>
+                <div style={{ 
+                  fontWeight: '500',
+                  opacity: 0.9,
+                  lineHeight: '1.4'
+                }}>
+                  {error}
+                </div>
+              </div>
+              <button 
+                type="button" 
+                className="btn-close align-self-start ms-2" 
+                onClick={() => setError(null)} 
+                style={{ 
+                  filter: 'invert(1) brightness(200%)',
+                  opacity: 0.7,
+                  transition: 'all 0.2s ease',
+                  transform: 'scale(0.9)'
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.opacity = '0.7';
+                  e.currentTarget.style.transform = 'scale(0.9)';
+                }}
+              />
             </div>
-            <button 
-              type="button" 
-              className="btn-close" 
-              onClick={() => setError(null)} 
-              style={{ 
-                filter: 'invert(1) brightness(200%)',
-                opacity: 0.8,
-                transition: 'opacity 0.2s'
-              }}
-              onMouseOver={e => e.currentTarget.style.opacity = '1'}
-              onMouseOut={e => e.currentTarget.style.opacity = '0.8'}
-            />
           </div>
         )}
         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -154,7 +209,7 @@ export default function CursosList() {
                 onClick={(e) => {
                   if (!curso.esta_inscrito) {
                     e.preventDefault();
-                    setError('¡Inscríbete primero! Para acceder al curso debes estar inscrito');
+                    setError('¡Únete al curso! Para explorar este contenido, necesitas inscribirte primero. ¡Es muy fácil! Solo haz clic en el botón "Inscribirse".');
                     return;
                   }
                   navigate(`/cursos/${curso.id}`);
