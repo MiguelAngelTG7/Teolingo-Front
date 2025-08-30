@@ -110,12 +110,55 @@ export default function CursosList() {
                 onMouseOut={e => { e.currentTarget.style.boxShadow = '0 4px 18px #0008'; e.currentTarget.style.transform = 'none'; }}
               >
                 {/* Imagen del curso (por convención: curso_{curso.id}.png) */}
-                <img
-                  src={`/assets/curso_${curso.id}.png`}
-                  alt={curso.titulo}
-                  style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block', background: '#222' }}
-                  onError={e => { e.target.style.display = 'none'; }}
-                />
+                <div className="position-relative">
+                  <img
+                    src={`/assets/curso_${curso.id}.png`}
+                    alt={curso.titulo}
+                    style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block', background: '#222' }}
+                    onError={e => { e.target.style.display = 'none'; }}
+                  />
+                  <div className="position-absolute" style={{ 
+                    top: 16, 
+                    right: 16, 
+                    background: 'rgba(24, 24, 24, 0.8)',
+                    backdropFilter: 'blur(5px)',
+                    borderRadius: '10px',
+                    padding: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                  }}>
+                    {!curso.esta_inscrito ? (
+                      <button
+                        onClick={(e) => handleInscripcion(e, curso.id)}
+                        className="btn"
+                        style={{
+                          background: '#1cb0f6',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '6px 12px',
+                          fontSize: '14px',
+                          fontWeight: '700',
+                          letterSpacing: '0.5px',
+                          textTransform: 'uppercase'
+                        }}
+                      >
+                        Inscribirse
+                      </button>
+                    ) : (
+                      <span style={{ 
+                        color: '#fff', 
+                        fontWeight: '600',
+                        fontSize: '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <i className="bi bi-check-circle-fill"></i>
+                        Inscrito
+                      </span>
+                    )}
+                  </div>
+                </div>
                 {/* Barra de progreso y datos debajo de la imagen, con fondo diferenciado */}
                 <div style={{ background: '#232323', padding: '16px 16px 0 16px', borderBottom: '2px solid #fff' }}>
                   {progresos[curso.id] && (
@@ -143,46 +186,13 @@ export default function CursosList() {
                   </div>
                 </div>
                 {/* Título y categoría debajo */}
-                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 100, padding: '10px 10px 16px' }}>
-                  <div>
-                    <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
-                    <div style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
-                      {curso.categoria?.nombre && (
-                        <span>{curso.categoria.nombre}</span>
-                      )}
-                    </div>
+                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 80, padding: '16px 10px' }}>
+                  <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
+                  <div style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
+                    {curso.categoria?.nombre && (
+                      <span>{curso.categoria.nombre}</span>
+                    )}
                   </div>
-                  {!curso.esta_inscrito ? (
-                    <button
-                      onClick={(e) => handleInscripcion(e, curso.id)}
-                      className="btn"
-                      style={{
-                        background: '#1cb0f6',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '10px',
-                        padding: '6px 12px',
-                        fontSize: '14px',
-                        fontWeight: '700',
-                        letterSpacing: '0.5px',
-                        textTransform: 'uppercase'
-                      }}
-                    >
-                      Inscribirse
-                    </button>
-                  ) : (
-                    <span style={{ 
-                      color: '#1cb0f6', 
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <i className="bi bi-check-circle-fill"></i>
-                      Inscrito
-                    </span>
-                  )}
                 </div>
               </div>
             </div>
