@@ -81,6 +81,12 @@ export default function CursosList() {
   return (
     <div className="min-vh-100" style={{ background: '#111' }}>
       <div className="container py-4" style={{ maxWidth: 900 }}>
+        {error && (
+          <div className="alert alert-warning alert-dismissible fade show mb-4" role="alert" style={{ background: 'rgba(255, 193, 7, 0.1)', color: '#ffc107', border: '1px solid #ffc107' }}>
+            {error}
+            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setError(null)} style={{ filter: 'invert(1)' }}></button>
+          </div>
+        )}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h2 className="mb-1" style={{ color: '#fff', fontWeight: 900, fontSize: 32, letterSpacing: 0.5, textTransform: 'uppercase' }}>
@@ -104,8 +110,15 @@ export default function CursosList() {
               <div
                 className="shadow-sm rounded-4 h-100 position-relative"
                 style={{ background: '#181818', border: '2px solid #fff', boxShadow: '0 4px 18px #0008', overflow: 'hidden', transition: 'box-shadow 0.2s, transform 0.2s' }}
-                onClick={() => navigate(`/cursos/${curso.id}`)}
-                title="Ir al curso"
+                onClick={(e) => {
+                  if (!curso.esta_inscrito) {
+                    e.preventDefault();
+                    setError('Debe inscribirse para acceder al curso');
+                    return;
+                  }
+                  navigate(`/cursos/${curso.id}`);
+                }}
+                title={curso.esta_inscrito ? "Ir al curso" : "Debe inscribirse para acceder al curso"}
                 onMouseOver={e => { e.currentTarget.style.boxShadow = '0 12px 36px #1cb0f633'; e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'; }}
                 onMouseOut={e => { e.currentTarget.style.boxShadow = '0 4px 18px #0008'; e.currentTarget.style.transform = 'none'; }}
               >
