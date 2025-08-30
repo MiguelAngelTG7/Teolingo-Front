@@ -106,7 +106,6 @@ export default function CursosList() {
   };
 
   if (loading) return <p className="text-secondary">Cargando cursos...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
 
   console.log('Estado de autenticación:', {
     accessToken,
