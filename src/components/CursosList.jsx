@@ -57,10 +57,15 @@ export default function CursosList() {
   const handleInscripcion = async (e, cursoId) => {
     e.stopPropagation(); // Evitar que el click se propague al div del curso
     try {
-      await inscribirseEnCurso(cursoId);
+      // Hacer la petición de inscripción
+      await api.post(`/cursos/${cursoId}/inscribir/`);
+      
       // Actualizar la lista de cursos para reflejar el cambio
-      const response = await getCursos();
+      const response = await api.get('/cursos/');
       setCursos(response.data);
+      
+      // Limpiar cualquier mensaje de error previo
+      setError(null);
     } catch (error) {
       console.error('Error al inscribirse:', error);
       setError(error.response?.data?.message || 'Error al inscribirse en el curso');
@@ -82,9 +87,35 @@ export default function CursosList() {
     <div className="min-vh-100" style={{ background: '#111' }}>
       <div className="container py-4" style={{ maxWidth: 900 }}>
         {error && (
-          <div className="alert alert-warning alert-dismissible fade show mb-4" role="alert" style={{ background: 'rgba(255, 193, 7, 0.1)', color: '#ffc107', border: '1px solid #ffc107' }}>
-            {error}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setError(null)} style={{ filter: 'invert(1)' }}></button>
+          <div 
+            className="alert fade show mb-4 d-flex align-items-center justify-content-between" 
+            role="alert" 
+            style={{ 
+              background: 'rgba(28, 176, 246, 0.1)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid #1cb0f6',
+              borderRadius: '12px',
+              color: '#fff',
+              padding: '16px 20px',
+              boxShadow: '0 4px 12px rgba(28, 176, 246, 0.15)'
+            }}
+          >
+            <div className="d-flex align-items-center gap-3">
+              <i className="bi bi-info-circle-fill" style={{ color: '#1cb0f6', fontSize: '1.5rem' }}></i>
+              <span style={{ fontWeight: 600, letterSpacing: '0.3px' }}>{error}</span>
+            </div>
+            <button 
+              type="button" 
+              className="btn-close" 
+              onClick={() => setError(null)} 
+              style={{ 
+                filter: 'invert(1) brightness(200%)',
+                opacity: 0.8,
+                transition: 'opacity 0.2s'
+              }}
+              onMouseOver={e => e.currentTarget.style.opacity = '1'}
+              onMouseOut={e => e.currentTarget.style.opacity = '0.8'}
+            />
           </div>
         )}
         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -113,7 +144,7 @@ export default function CursosList() {
                 onClick={(e) => {
                   if (!curso.esta_inscrito) {
                     e.preventDefault();
-                    setError('Debe inscribirse para acceder al curso');
+                    setError('¡Inscríbete primero! Para acceder al curso debes estar inscrito');
                     return;
                   }
                   navigate(`/cursos/${curso.id}`);
