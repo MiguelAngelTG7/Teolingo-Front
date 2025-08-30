@@ -57,8 +57,14 @@ export default function CursosList() {
   const handleInscripcion = async (e, cursoId) => {
     e.stopPropagation(); // Evitar que el click se propague al div del curso
     try {
-      // Hacer la petición de inscripción
-      await api.post(`/cursos/${cursoId}/`);
+      // Hacer la petición de inscripción al endpoint correcto
+      const inscripcionResponse = await api.post(`/cursos/${cursoId}/`);
+      
+      // Mostrar mensaje de éxito si está disponible
+      if (inscripcionResponse.data?.message) {
+        setError(null);
+        // Podríamos mostrar un mensaje de éxito aquí si lo deseas
+      }
       
       // Actualizar la lista de cursos para reflejar el cambio
       const response = await api.get('/cursos/');
