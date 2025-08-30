@@ -143,7 +143,7 @@ export default function CursosList() {
                   </div>
                 </div>
                 {/* Título y categoría debajo */}
-                <div className="card-body d-flex flex-column justify-content-between align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 100, padding: '10px 10px 16px' }}>
+                <div className="card-body d-flex flex-column justify-content-center align-items-center text-center duolingo-font" style={{ background: 'transparent', minHeight: 100, padding: '10px 10px 16px' }}>
                   <div>
                     <h3 className="fw-bold mb-1" style={{ color: '#fff', fontSize: 22, textShadow: '0 2px 8px #0008', fontWeight: 900 }}>{curso.titulo}</h3>
                     <div style={{ fontSize: '1.05rem', color: '#e0e0e0', fontWeight: 600, textShadow: '0 1px 4px #0007' }}>
