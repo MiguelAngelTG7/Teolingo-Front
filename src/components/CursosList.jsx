@@ -4,6 +4,22 @@ import api from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import '../App.css';
 
+// Agregar estilos para las animaciones
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -40%) scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+`;
+document.head.appendChild(style);
+
 export default function CursosList() {
   const { accessToken, logout, user } = useAuth();
   const [cursos, setCursos] = useState([]);
@@ -104,84 +120,76 @@ export default function CursosList() {
     <div className="min-vh-100" style={{ background: '#111' }}>
       <div className="container py-4" style={{ maxWidth: 900 }}>
         {error && (
-          <div 
-            className="alert fade show mb-4" 
-            role="alert" 
-            style={{ 
-              background: error.includes('exitosamente') ? 'rgba(23, 201, 100, 0.1)' : 'rgba(28, 176, 246, 0.1)',
-              backdropFilter: 'blur(8px)',
-              border: error.includes('exitosamente') ? '1px solid #17c964' : '1px solid #1cb0f6',
-              borderRadius: '16px',
-              color: '#fff',
-              padding: '20px',
-              boxShadow: error.includes('exitosamente') 
-                ? '0 8px 16px rgba(23, 201, 100, 0.15)' 
-                : '0 8px 16px rgba(28, 176, 246, 0.15)',
-              animation: 'fadeInDown 0.3s ease-out'
-            }}
-          >
-            <div className="d-flex align-items-center gap-4">
-              {error.includes('exitosamente') ? (
+          typeof error === 'string' ? (
+            // Mensaje de texto normal
+            <div 
+              className="alert fade show mb-4" 
+              role="alert" 
+              style={{ 
+                background: error.includes('exitosamente') ? 'rgba(23, 201, 100, 0.95)' : 'rgba(28, 176, 246, 0.95)',
+                backdropFilter: 'blur(8px)',
+                border: error.includes('exitosamente') ? '2px solid rgba(255, 255, 255, 0.1)' : '2px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '16px',
+                color: '#fff',
+                padding: '20px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+                animation: 'fadeInDown 0.3s ease-out'
+              }}
+            >
+              <div className="d-flex align-items-center gap-4">
                 <div className="d-flex align-items-center justify-content-center" 
                   style={{ 
-                    background: 'rgba(23, 201, 100, 0.2)',
+                    background: 'rgba(255, 255, 255, 0.1)',
                     borderRadius: '12px',
                     padding: '12px',
                     width: '48px',
                     height: '48px'
                   }}>
-                  <i className="bi bi-check-circle-fill" style={{ color: '#17c964', fontSize: '1.8rem' }}></i>
+                  <i className={`bi ${error.includes('exitosamente') ? 'bi-check-circle-fill' : 'bi-info-circle-fill'}`} 
+                     style={{ color: '#fff', fontSize: '1.8rem' }}></i>
                 </div>
-              ) : (
-                <div className="d-flex align-items-center justify-content-center" 
-                  style={{ 
-                    background: 'rgba(28, 176, 246, 0.2)',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    width: '48px',
-                    height: '48px'
+                <div className="flex-grow-1">
+                  <div style={{ 
+                    fontWeight: '700', 
+                    fontSize: '1.1rem', 
+                    marginBottom: '4px',
+                    letterSpacing: '0.3px'
                   }}>
-                  <i className="bi bi-info-circle-fill" style={{ color: '#1cb0f6', fontSize: '1.8rem' }}></i>
+                    {error.includes('exitosamente') ? '¡Felicitaciones!' : '¡Atención!'}
+                  </div>
+                  <div style={{ 
+                    fontWeight: '500',
+                    opacity: 0.9,
+                    lineHeight: '1.4'
+                  }}>
+                    {error}
+                  </div>
                 </div>
-              )}
-              <div className="flex-grow-1">
-                <div style={{ 
-                  fontWeight: '700', 
-                  fontSize: '1.1rem', 
-                  marginBottom: '4px',
-                  letterSpacing: '0.3px'
-                }}>
-                  {error.includes('exitosamente') ? '¡Felicitaciones!' : '¡Atención!'}
-                </div>
-                <div style={{ 
-                  fontWeight: '500',
-                  opacity: 0.9,
-                  lineHeight: '1.4'
-                }}>
-                  {error}
-                </div>
+                <button 
+                  type="button" 
+                  className="btn-close align-self-start ms-2" 
+                  onClick={() => setError(null)} 
+                  style={{ 
+                    filter: 'invert(1)',
+                    opacity: 0.7,
+                    transition: 'all 0.2s ease',
+                    transform: 'scale(0.9)'
+                  }}
+                  onMouseOver={e => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                  onMouseOut={e => {
+                    e.currentTarget.style.opacity = '0.7';
+                    e.currentTarget.style.transform = 'scale(0.9)';
+                  }}
+                />
               </div>
-              <button 
-                type="button" 
-                className="btn-close align-self-start ms-2" 
-                onClick={() => setError(null)} 
-                style={{ 
-                  filter: 'invert(1) brightness(200%)',
-                  opacity: 0.7,
-                  transition: 'all 0.2s ease',
-                  transform: 'scale(0.9)'
-                }}
-                onMouseOver={e => {
-                  e.currentTarget.style.opacity = '1';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-                onMouseOut={e => {
-                  e.currentTarget.style.opacity = '0.7';
-                  e.currentTarget.style.transform = 'scale(0.9)';
-                }}
-              />
             </div>
-          </div>
+          ) : (
+            // Contenido JSX personalizado (para el modal de inscripción)
+            error
+          )
         )}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
@@ -209,12 +217,71 @@ export default function CursosList() {
                 onClick={(e) => {
                   if (!curso.esta_inscrito) {
                     e.preventDefault();
-                    setError('¡Únete al curso! Para explorar este contenido, necesitas inscribirte primero. ¡Es muy fácil! Solo haz clic en el botón "Inscribirse".');
+                    const message = (
+                      <div 
+                        className="position-fixed top-50 start-50 translate-middle"
+                        style={{
+                          zIndex: 1050,
+                          width: '320px',
+                          background: 'rgba(28, 176, 246, 0.95)',
+                          backdropFilter: 'blur(10px)',
+                          borderRadius: '20px',
+                          padding: '24px',
+                          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                          border: '2px solid rgba(255, 255, 255, 0.1)',
+                          color: '#fff',
+                          textAlign: 'center',
+                          animation: 'fadeInScale 0.3s ease-out'
+                        }}
+                      >
+                        <div className="mb-3">
+                          <i className="bi bi-lock-fill" style={{ fontSize: '2.5rem', color: '#fff' }}></i>
+                        </div>
+                        <h4 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '12px' }}>
+                          ¡Contenido Bloqueado!
+                        </h4>
+                        <p style={{ fontSize: '1rem', marginBottom: '16px', lineHeight: '1.4' }}>
+                          Para explorar este curso, necesitas inscribirte primero.
+                        </p>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleInscripcion(e, curso.id);
+                          }}
+                          className="btn"
+                          style={{
+                            background: '#fff',
+                            color: '#1cb0f6',
+                            border: 'none',
+                            borderRadius: '12px',
+                            padding: '10px 24px',
+                            fontSize: '15px',
+                            fontWeight: '700',
+                            letterSpacing: '0.5px',
+                            textTransform: 'uppercase',
+                            transition: 'transform 0.2s, box-shadow 0.2s'
+                          }}
+                          onMouseOver={e => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+                          }}
+                          onMouseOut={e => {
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          Inscribirme Ahora
+                        </button>
+                      </div>
+                    );
+                    setError(message);
+                    // Limpiar el mensaje después de 5 segundos
+                    setTimeout(() => setError(null), 5000);
                     return;
                   }
                   navigate(`/cursos/${curso.id}`);
                 }}
-                title={curso.esta_inscrito ? "Ir al curso" : "Debe inscribirse para acceder al curso"}
+                title={curso.esta_inscrito ? "Ir al curso" : "Inscríbete para acceder"}
                 onMouseOver={e => { e.currentTarget.style.boxShadow = '0 12px 36px #1cb0f633'; e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)'; }}
                 onMouseOut={e => { e.currentTarget.style.boxShadow = '0 4px 18px #0008'; e.currentTarget.style.transform = 'none'; }}
               >
