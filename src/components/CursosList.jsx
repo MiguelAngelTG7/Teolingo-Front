@@ -113,7 +113,7 @@ export default function CursosList() {
                 <img
                   src={`/assets/curso_${curso.id}.png`}
                   alt={curso.titulo}
-                  style={{ width: '100%', height: 320, objectFit: 'cover', display: 'block', background: '#222' }}
+                  style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block', background: '#222' }}
                   onError={e => { e.target.style.display = 'none'; }}
                 />
                 {/* Barra de progreso y datos debajo de la imagen, con fondo diferenciado */}
