@@ -88,7 +88,7 @@ export default function LeccionDetail() {
         
         // Si es el último ejercicio, guardamos el progreso de la lección completa
         if (actual + 1 === leccion.ejercicios.length) {
-          return fetch(`${API_URL}/leccion/${id}/progreso/`, {
+          return fetch(`${API_URL}/cursos/${leccion.curso_id}/leccion/${id}/progreso/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
