@@ -57,12 +57,12 @@ export default function LeccionDetail() {
   ).length;
   const total = leccion.ejercicios.length;
   const porcentaje = Math.round((correctas / total) * 100);
-  const xpTotal = correctas * 3;
+  const xpTotal = correctas; // 1 XP por ejercicio correcto
 
   // Guardar progreso en el servidor
   const guardarProgreso = (resultado) => {
     const API_URL = import.meta.env.VITE_API_BASE_URL;
-    const xpPorEjercicio = 3; // 3 XP por ejercicio correcto
+    const xpPorEjercicio = 1; // 1 XP por ejercicio correcto
     
     fetch(`${API_URL}/cursos/leccion/${id}/progreso/`, {
       method: 'POST',
@@ -71,7 +71,7 @@ export default function LeccionDetail() {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify({ 
-        puntaje: correctas * xpPorEjercicio, // Calculamos el XP total
+        puntaje: correctas, // 1 XP por ejercicio correcto
         ejercicios_completados: leccion.ejercicios.length,
         ejercicios_correctos: correctas
       })
