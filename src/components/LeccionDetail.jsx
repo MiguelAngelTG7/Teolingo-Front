@@ -5,7 +5,9 @@ import { getLeccion } from "../api/axiosConfig";
 export default function LeccionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = window.location;
   const [leccion, setLeccion] = useState(null);
+  const [cursoId, setCursoId] = useState(null);
   const [respuestas, setRespuestas] = useState({});
   const [actual, setActual] = useState(0);
   const [mostrarFeedback, setMostrarFeedback] = useState(false);
@@ -13,7 +15,13 @@ export default function LeccionDetail() {
   const [opcionSeleccionada, setOpcionSeleccionada] = useState(null);
 
   useEffect(() => {
-    getLeccion(id).then(res => setLeccion(res.data));
+    getLeccion(id).then(res => {
+      setLeccion(res.data);
+      // Intentar obtener el curso_id de la respuesta
+      if (res.data.curso_id) {
+        setCursoId(res.data.curso_id);
+      }
+    });
   }, [id]);
 
   if (!leccion) return <p className="p-4">Cargando lección...</p>;
@@ -88,7 +96,12 @@ export default function LeccionDetail() {
         
         // Si es el último ejercicio, guardamos el progreso de la lección completa
         if (actual + 1 === leccion.ejercicios.length) {
-          return fetch(`${API_URL}/cursos/${leccion.curso_id}/leccion/${id}/progreso/`, {
+          // Intentar obtener el curso_id del estado o de la lección
+          const curso_id = cursoId || leccion.curso_id;
+          if (!curso_id) {
+            throw new Error('No se pudo determinar el ID del curso');
+          }
+          return fetch(`${API_URL}/cursos/${curso_id}/leccion/${id}/progreso/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
