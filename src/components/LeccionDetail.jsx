@@ -284,7 +284,7 @@ export default function LeccionDetail() {
               <>
                 <p
                   className={`mt-3 fw-bold text-center`}
-                  style={{ fontSize: '1rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#d1d070ff' : '#ff7e7eff' }}
+                  style={{ fontSize: '1.5rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#d1d070ff' : '#ff7e7eff' }}
                 >
                   {respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta
                     ? ' ¡Correcto!'
