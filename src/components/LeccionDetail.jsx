@@ -63,6 +63,7 @@ export default function LeccionDetail() {
   const guardarProgreso = (resultado) => {
     const API_URL = import.meta.env.VITE_API_BASE_URL;
     
+    // Primero registramos la respuesta del ejercicio actual
     fetch(`${API_URL}/cursos/ejercicio/${ejercicioActual.id}/respuesta/`, {
       method: 'POST',
       headers: {
@@ -83,7 +84,36 @@ export default function LeccionDetail() {
         return res.json();
       })
       .then(data => {
-        console.log('Progreso guardado:', data);
+        console.log('Progreso del ejercicio guardado:', data);
+        
+        // Si es el último ejercicio, guardamos el progreso de la lección completa
+        if (actual + 1 === leccion.ejercicios.length) {
+          return fetch(`${API_URL}/leccion/${id}/progreso/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify({
+              puntaje: porcentaje,
+              completado: true
+            })
+          });
+        }
+      })
+      .then(async res => {
+        if (res) {  // Solo si se hizo la segunda llamada
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`HTTP ${res.status}: ${text}`);
+          }
+          return res.json();
+        }
+      })
+      .then(data => {
+        if (data) {
+          console.log('Progreso de la lección guardado:', data);
+        }
       })
       .catch(err => {
         console.error('Error guardando progreso:', err);
