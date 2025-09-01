@@ -195,13 +195,11 @@ export default function LeccionDetail() {
             <div className="col-12 text-center">
               <button
                 onClick={() => {
-                  // Ir a la siguiente lección si existe
-                  if (leccion.siguiente_leccion_id) {
-                    navigate(`/lecciones/${leccion.siguiente_leccion_id}`);
-                  } else if (leccion.curso_id) {
+                  // Ir directamente a la página de progreso del curso
+                  if (leccion.curso_id) {
                     navigate(`/cursos/${leccion.curso_id}/progreso`);
                   } else {
-                    alert("No se encontró la siguiente lección ni el curso de esta lección.");
+                    alert("No se pudo encontrar el curso asociado a esta lección.");
                   }
                 }}
                 style={{
