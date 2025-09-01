@@ -62,6 +62,7 @@ export default function LeccionDetail() {
   // Guardar progreso en el servidor
   const guardarProgreso = (resultado) => {
     const API_URL = import.meta.env.VITE_API_BASE_URL;
+    const xpPorEjercicio = 3; // 3 XP por ejercicio correcto
     
     fetch(`${API_URL}/cursos/leccion/${id}/progreso/`, {
       method: 'POST',
@@ -70,7 +71,7 @@ export default function LeccionDetail() {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify({ 
-        puntaje: resultado,
+        puntaje: correctas * xpPorEjercicio, // Calculamos el XP total
         ejercicios_completados: leccion.ejercicios.length,
         ejercicios_correctos: correctas
       })
@@ -283,7 +284,7 @@ export default function LeccionDetail() {
               <>
                 <p
                   className={`mt-3 fw-bold text-center`}
-                  style={{ fontSize: '2rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#d1d070ff' : '#ff7e7eff' }}
+                  style={{ fontSize: '1rem', color: respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta ? '#d1d070ff' : '#ff7e7eff' }}
                 >
                   {respuestas[ejercicioActual.id] === ejercicioActual.respuesta_correcta
                     ? ' ¡Correcto!'
