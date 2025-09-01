@@ -41,6 +41,24 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Interceptor para manejar errores de respuesta
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401 && 
+        error.response.data.code === "token_not_valid") {
+      // Limpiar el token expirado
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
+      
+      // Redirigir a login
+      window.location.href = '/login';
+      return Promise.reject(new Error('Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.'));
+    }
+    return Promise.reject(error);
+  }
+);
+
 // API endpoints
 export const getCursos = () => api.get('/cursos/');
 export const getCurso = (id) => api.get(`/cursos/${id}/`);

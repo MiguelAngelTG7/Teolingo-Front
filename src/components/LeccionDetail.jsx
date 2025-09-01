@@ -13,8 +13,18 @@ export default function LeccionDetail() {
   const [opcionSeleccionada, setOpcionSeleccionada] = useState(null);
 
   useEffect(() => {
-    getLeccion(id).then(res => setLeccion(res.data));
-  }, [id]);
+    getLeccion(id)
+      .then(res => setLeccion(res.data))
+      .catch(err => {
+        console.error('Error:', err);
+        if (err.response && err.response.status === 401) {
+          alert("Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
+          navigate('/login');
+        } else {
+          alert("Error al cargar la lección. Por favor intenta nuevamente.");
+        }
+      });
+  }, [id, navigate]);
 
   if (!leccion) return <p className="p-4">Cargando lección...</p>;
 
