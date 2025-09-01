@@ -78,8 +78,13 @@ export default function LeccionDetail() {
     })
       .then(async res => {
         if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`HTTP ${res.status}: ${text}`);
+          const data = await res.json();
+          if (res.status === 401 && data.code === "token_not_valid") {
+            alert("Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
+            navigate('/login');
+            return;
+          }
+          throw new Error(data.detail || "Error al guardar el progreso");
         }
         return res.json();
       })
@@ -88,7 +93,11 @@ export default function LeccionDetail() {
       })
       .catch(err => {
         console.error('Error guardando progreso:', err);
-        alert("Error al guardar el progreso. Por favor intenta nuevamente.");
+        if (err.message) {
+          alert(err.message);
+        } else {
+          alert("Error al guardar el progreso. Por favor intenta nuevamente.");
+        }
       });
   };
 
