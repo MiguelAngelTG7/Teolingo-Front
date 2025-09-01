@@ -103,26 +103,6 @@ export default function CursoProgreso() {
             <button
               className="btn fw-bold"
               style={{
-                background: '#1cb0f6',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 10,
-                fontSize: 18,
-                letterSpacing: 0.5,
-                textTransform: 'uppercase',
-                minWidth: 200,
-                padding: '12px 0',
-                fontWeight: 800,
-                boxShadow: '0 2px 12px #0005',
-                marginTop: 8
-              }}
-              onClick={() => navigate(`/lecciones/${siguienteLeccion.leccion}`)}
-            >
-              Siguiente lección
-            </button>
-            <button
-              className="btn fw-bold"
-              style={{
                 background: '#232323',
                 color: '#fff',
                 border: '2px solid #1cb0f6',
