@@ -68,3 +68,5 @@ export const getLeccion = (id) => api.get(`/cursos/leccion/${id}/`);
 export const getExamenFinal = (cursoId) => api.get(`/cursos/${cursoId}/examen-final/`);
 
 export default api;
+
+const API_BASE_URL = 'https://teolingo-back.onrender.com/api';
