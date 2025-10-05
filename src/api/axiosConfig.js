@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+// Corregir el nombre de la variable de entorno
+const baseURL = import.meta.env.VITE_API_URL || 'https://teolingo-back.onrender.com/api';
 
 const api = axios.create({
     baseURL: baseURL,
@@ -68,5 +69,3 @@ export const getLeccion = (id) => api.get(`/cursos/leccion/${id}/`);
 export const getExamenFinal = (cursoId) => api.get(`/cursos/${cursoId}/examen-final/`);
 
 export default api;
-
-const API_BASE_URL = 'https://teolingo-back.onrender.com/api';
