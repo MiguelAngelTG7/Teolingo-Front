@@ -340,11 +340,11 @@ const verificarPDFExiste = async (cursoId, leccionOrden) => {
             justifyContent: 'space-between',
           }}
           tabIndex={0}
-          onClick={() => navigate(`/leccion/${leccion.id}`)}
+          onClick={() => navigate(`/lecciones/${leccion.id}`)}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              navigate(`/leccion/${leccion.id}`);
+              navigate(`/lecciones/${leccion.id}`);
             }
           }}
           onMouseOver={e => {
