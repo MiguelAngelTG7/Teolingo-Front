@@ -351,7 +351,7 @@ export default function CursosList() {
                   <div className="d-flex justify-content-between align-items-center mb-2" style={{ fontSize: 15, fontWeight: 600, color: '#e0e0e0' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <i className="bi bi-journal-text" style={{ fontSize: 17, color: '#1cb0f6' }}></i>
-                      {curso.lecciones_count} Lecciones
+                      {curso.lecciones?.length || curso.lecciones_count || 0} Lecciones
                     </span>
                     {progresos[curso.id] && (
                       <span style={{ color: '#1cb0f6', fontWeight: 700 }}>
