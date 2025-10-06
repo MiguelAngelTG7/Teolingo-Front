@@ -126,13 +126,10 @@ export default function CursoDetail() {
                 marginBottom: 12
               }}
               onClick={() => {
-                // Encontrar el número de la lección basado en su posición en el array
-                const idx = curso.lecciones.findIndex(l => l.id === leccionSeleccionada.id);
-                const leccionNumero = idx + 1; // Número de lección (1-based)
-                
+                // Usar el ID real de la lección en lugar de su posición
                 const link = document.createElement('a');
-                link.href = `/assets/leccion_${leccionNumero}.pdf`;
-                link.download = `leccion_${leccionNumero}.pdf`;
+                link.href = `/assets/leccion_${leccionSeleccionada.id}.pdf`;
+                link.download = `leccion_${leccionSeleccionada.id}.pdf`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
