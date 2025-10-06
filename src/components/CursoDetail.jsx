@@ -165,6 +165,35 @@ export default function CursoDetail() {
     );
   }
 
+  // Agregar la función para descargar PDFs
+const handleDescargarPDF = (cursoId, leccionOrden, leccionTitulo) => {
+  // Construir la URL del archivo basada en curso y orden de lección
+  const pdfUrl = `/assets/curso_${cursoId}/Leccion_${leccionOrden}.pdf`;
+  
+  // Crear elemento <a> para descarga
+  const link = document.createElement('a');
+  link.href = pdfUrl;
+  link.download = `${leccionTitulo.replace(/\s+/g, '_')}.pdf`;
+  link.target = '_blank';
+  
+  // Agregar al DOM, hacer click y remover
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Función para verificar si existe el PDF (opcional)
+const verificarPDFExiste = async (cursoId, leccionOrden) => {
+  try {
+    const response = await fetch(`/assets/curso_${cursoId}/Leccion_${leccionOrden}.pdf`, {
+      method: 'HEAD'
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
+
   // Listado de lecciones
   return (
     <div style={{ position: 'relative' }}>
@@ -276,6 +305,8 @@ export default function CursoDetail() {
           {curso.lecciones && [...curso.lecciones]
             .sort((a, b) => a.id - b.id)
             .map((leccion, idx) => {
+              const leccionOrden = idx + 1; // Calcular el orden basado en el índice
+              
               // Buscar progreso de la lección
               let completada = false;
               if (progreso && progreso.lecciones) {
@@ -306,45 +337,95 @@ export default function CursoDetail() {
                       userSelect: 'none',
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'space-between',
                     }}
                     tabIndex={0}
-                    onClick={() => setLeccionSeleccionada(leccion)}
-                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setLeccionSeleccionada(leccion); }}
+                    onClick={() => navigate(`/leccion/${leccion.id}`)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        navigate(`/leccion/${leccion.id}`);
+                      }
+                    }}
                     onMouseOver={e => {
-                      e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
-                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                      e.currentTarget.style.borderColor = '#1cb0f6';
+                      e.currentTarget.style.boxShadow = '0 12px 48px rgba(128,191,255,0.25)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.borderColor = '#00d4ff';
                     }}
                     onMouseOut={e => {
                       e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
-                      e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.borderColor = '#fff';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.borderColor = '#1cb0f6';
                     }}
                   >
-                    {/* Círculo de progreso */}
-                    <span style={{
-                      display: 'inline-block',
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      border: '2.5px solid #1cb0f6',
-                      background: completada ? '#1cb0f6' : 'transparent',
-                      marginRight: 18,
-                      transition: 'background 0.2s',
-                    }} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                        Lección {numeroLeccion}
-                      </div>
-                      <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
-                        {leccion.titulo}
-                      </div>
-                      {leccion.descripcion && (
-                        <div style={{ color: '#e0e0e0', fontWeight: 400, fontSize: 16, marginTop: 2, opacity: 0.85 }}>
-                          {leccion.descripcion}
+                    <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                      <span style={{
+                        display: 'inline-block',
+                        width: 28,
+                        height: 28,
+                        borderRadius: '50%',
+                        border: `2.5px solid ${leccionCompletada ? '#1cb0f6' : '#555'}`,
+                        background: leccionCompletada ? '#1cb0f6' : 'transparent',
+                        marginRight: 18,
+                        transition: 'background 0.2s',
+                      }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ 
+                          fontSize: 15, 
+                          fontWeight: 600, 
+                          color: '#1cb0f6', 
+                          marginBottom: 2, 
+                          textTransform: 'uppercase', 
+                          letterSpacing: 0.5 
+                        }}>
+                          Lección {leccionOrden}
                         </div>
-                      )}
+                        <div style={{ 
+                          fontSize: 22, 
+                          fontWeight: 900, 
+                          color: '#fff', 
+                          marginBottom: 4, 
+                          textTransform: 'none', 
+                          letterSpacing: 0.2 
+                        }}>
+                          {leccion.titulo}
+                        </div>
+                      </div>
                     </div>
+                    
+                    {/* Botón de descarga PDF */}
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevenir que se ejecute el onClick del div padre
+                        handleDescargarPDF(curso.id, leccionOrden, leccion.titulo);
+                      }}
+                      style={{
+                        background: '#1cb0f6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '10px 16px',
+                        fontSize: '14px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'all 0.2s',
+                        marginLeft: '12px',
+                        minWidth: '80px'
+                      }}
+                      onMouseOver={(e) => {
+                        e.target.style.background = '#1890d0';
+                        e.target.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.background = '#1cb0f6';
+                        e.target.style.transform = 'scale(1)';
+                      }}
+                    >
+                      📥 PDF
+                    </button>
                   </div>
                 </div>
               );
