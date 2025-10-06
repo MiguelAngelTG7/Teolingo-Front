@@ -165,35 +165,6 @@ export default function CursoDetail() {
     );
   }
 
-  // Agregar la función para descargar PDFs
-const handleDescargarPDF = (cursoId, leccionOrden, leccionTitulo) => {
-  // Construir la URL del archivo basada en curso y orden de lección
-  const pdfUrl = `/assets/curso_${cursoId}/Leccion_${leccionOrden}.pdf`;
-  
-  // Crear elemento <a> para descarga
-  const link = document.createElement('a');
-  link.href = pdfUrl;
-  link.download = `${leccionTitulo.replace(/\s+/g, '_')}.pdf`;
-  link.target = '_blank';
-  
-  // Agregar al DOM, hacer click y remover
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-// Función para verificar si existe el PDF (opcional)
-const verificarPDFExiste = async (cursoId, leccionOrden) => {
-  try {
-    const response = await fetch(`/assets/curso_${cursoId}/Leccion_${leccionOrden}.pdf`, {
-      method: 'HEAD'
-    });
-    return response.ok;
-  } catch {
-    return false;
-  }
-};
-
   // Listado de lecciones
   return (
     <div style={{ position: 'relative' }}>
@@ -303,133 +274,81 @@ const verificarPDFExiste = async (cursoId, leccionOrden) => {
         {/* Listado de lecciones */}
         <div className="row justify-content-center">
           {curso.lecciones && [...curso.lecciones]
-  .sort((a, b) => a.id - b.id)
-  .map((leccion, idx) => {
-    const leccionOrden = idx + 1; // Calcular el orden basado en el índice
-    
-    // Buscar progreso de la lección
-    let completada = false;
-    if (progreso && progreso.lecciones) {
-      const prog = progreso.lecciones.find(l => l.leccion === leccion.id);
-      completada = prog ? !!prog.completado : false;
-    }
-    // Calcular el número de lección según la posición real en el array
-    const numeroLeccion = curso.lecciones.findIndex(l => l.id === leccion.id) + 1;
-    return (
-      <div key={leccion.id} className="col-12 mb-3">
-        <div
-          className="lesson-card text-white"
-          style={{
-            background: '#181818',
-            border: '2px solid #fff',
-            borderRadius: 12,
-            padding: '22px 24px',
-            marginBottom: 8,
-            cursor: 'pointer',
-            fontWeight: 700,
-            fontSize: 20,
-            boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
-            transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
-            textAlign: 'left',
-            position: 'relative',
-            letterSpacing: 0.2,
-            outline: 'none',
-            userSelect: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-          tabIndex={0}
-          onClick={() => navigate(`/lecciones/${leccion.id}`)}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              navigate(`/lecciones/${leccion.id}`);
-            }
-          }}
-          onMouseOver={e => {
-            e.currentTarget.style.boxShadow = '0 12px 48px rgba(128,191,255,0.25)';
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.borderColor = '#00d4ff';
-          }}
-          onMouseOut={e => {
-            e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.borderColor = '#1cb0f6';
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-            <span style={{
-              display: 'inline-block',
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              border: `2.5px solid ${completada ? '#1cb0f6' : '#555'}`, // Cambié leccionCompletada por completada
-              background: completada ? '#1cb0f6' : 'transparent', // Cambié leccionCompletada por completada
-              marginRight: 18,
-              transition: 'background 0.2s',
-            }} />
-            <div style={{ flex: 1 }}>
-              <div style={{ 
-                fontSize: 15, 
-                fontWeight: 600, 
-                color: '#1cb0f6', 
-                marginBottom: 2, 
-                textTransform: 'uppercase', 
-                letterSpacing: 0.5 
-              }}>
-                Lección {leccionOrden}
-              </div>
-              <div style={{ 
-                fontSize: 22, 
-                fontWeight: 900, 
-                color: '#fff', 
-                marginBottom: 4, 
-                textTransform: 'none', 
-                letterSpacing: 0.2 
-              }}>
-                {leccion.titulo}
-              </div>
-            </div>
-          </div>
-          
-          {/* Botón de descarga PDF */}
-          <button 
-            onClick={(e) => {
-              e.stopPropagation(); // Prevenir que se ejecute el onClick del div padre
-              handleDescargarPDF(curso.id, leccionOrden, leccion.titulo);
-            }}
-            style={{
-              background: '#1cb0f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '10px 16px',
-              fontSize: '14px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.2s',
-              marginLeft: '12px',
-              minWidth: '80px'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.background = '#1890d0';
-              e.target.style.transform = 'scale(1.05)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background = '#1cb0f6';
-              e.target.style.transform = 'scale(1)';
-            }}
-          >
-            📥 PDF
-          </button>
-        </div>
-      </div>
-    );
-  })}
+            .sort((a, b) => a.id - b.id)
+            .map((leccion, idx) => {
+              // Buscar progreso de la lección
+              let completada = false;
+              if (progreso && progreso.lecciones) {
+                const prog = progreso.lecciones.find(l => l.leccion === leccion.id);
+                completada = prog ? !!prog.completado : false;
+              }
+              // Calcular el número de lección según la posición real en el array
+              const numeroLeccion = curso.lecciones.findIndex(l => l.id === leccion.id) + 1;
+              return (
+                <div key={leccion.id} className="col-12 mb-3">
+                  <div
+                    className="lesson-card text-white"
+                    style={{
+                      background: '#181818',
+                      border: '2px solid #fff',
+                      borderRadius: 12,
+                      padding: '22px 24px',
+                      marginBottom: 8,
+                      cursor: 'pointer',
+                      fontWeight: 700,
+                      fontSize: 20,
+                      boxShadow: '0 8px 32px rgba(128,191,255,0.18)',
+                      transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s',
+                      textAlign: 'left',
+                      position: 'relative',
+                      letterSpacing: 0.2,
+                      outline: 'none',
+                      userSelect: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    tabIndex={0}
+                    onClick={() => setLeccionSeleccionada(leccion)}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setLeccionSeleccionada(leccion); }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.boxShadow = '0 12px 36px rgba(128,191,255,0.25)';
+                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                      e.currentTarget.style.borderColor = '#1cb0f6';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(128,191,255,0.18)';
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.borderColor = '#fff';
+                    }}
+                  >
+                    {/* Círculo de progreso */}
+                    <span style={{
+                      display: 'inline-block',
+                      width: 28,
+                      height: 28,
+                      borderRadius: '50%',
+                      border: '2.5px solid #1cb0f6',
+                      background: completada ? '#1cb0f6' : 'transparent',
+                      marginRight: 18,
+                      transition: 'background 0.2s',
+                    }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: '#1cb0f6', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                        Lección {numeroLeccion}
+                      </div>
+                      <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4, textTransform: 'none', letterSpacing: 0.2 }}>
+                        {leccion.titulo}
+                      </div>
+                      {leccion.descripcion && (
+                        <div style={{ color: '#e0e0e0', fontWeight: 400, fontSize: 16, marginTop: 2, opacity: 0.85 }}>
+                          {leccion.descripcion}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           {/* Card de acceso al examen final */}
           {curso.lecciones && progreso && progreso.lecciones && curso.lecciones.length > 0 && 
            progreso.lecciones.filter(l => l.completado).length === curso.lecciones.length && (
